@@ -1,17 +1,55 @@
 # Writer's Cabinet #
 - [Writer's Cabinet](#writers-cabinet)
   - [To Do:](#to-do)
+  - [project organization:](#project-organization)
   - [MVP](#mvp)
     - [Possible additions](#possible-additions)
   - [View functions](#view-functions)
 
+<br>
 
 ## To Do:
 ---
 
-- [ ] djf
-- [x] dsd
+- [ ] create virtual enviornment
+  - [ ] install dependencies
+  - [ ] pip freeze to requierments.txt
+- [ ] create datebase
+  - [ ] create seeddata file
+- [ ] establish known view functions
 
+<br>
+
+## project organization:
+---
+```
+📦 WritersCabinet
+ ┣ 📂data
+ ┃ ┣ 📜files.json
+ ┃ ┣ 📜folders.json
+ ┃ ┗ 📜projects.json
+ ┣ 📂env...
+ ┣ 📂static
+ ┃ ┣ 📜reset.css
+ ┃ ┗ 📜styles.css
+ ┣ 📂templates
+ ┃ ┣ 📜base.html
+ ┃ ┣ 📜file_view.html
+ ┃ ┣ 📜folder_view.html
+ ┃ ┣ 📜homepage_logged_in.html
+ ┃ ┣ 📜login.html
+ ┃ ┣ 📜projects.html
+ ┃ ┗ 📜register.html
+ ┣ 📜.gitignore
+ ┣ 📜config.sh
+ ┣ 📜crud.py
+ ┣ 📜model.py
+ ┣ 📜requirements.txt
+ ┣ 📜seed_database.py
+ ┗ 📜server.py
+ ```
+
+<br>
 
 ## MVP
 ---
@@ -29,8 +67,11 @@
     - should be collapsable outside of edit mode
 - Gallery within files with imgs added
 
+<br>
+
 ### Possible additions
 --- 
+
 -future features: maybe sooner rather than later
 - User goals/stats
   - weekly/daily word count
