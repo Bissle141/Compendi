@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../static/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/styles.css">
+    <meta name="viewport" content="width=device-width">
+    <title>
+      {% block title %}{% endblock %}
+    </title>
+
+
+    <nav class="navbar navbar-expand-lg sticky-top" style="background-color: #F5F2EA;">
+      <img src="../static/Compendi_logo.svg" alt="logo" width="200" >
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <!-- <li class="nav-item">
+            <a class="nav-link" href="/">Projects</a>
+          </li> -->
+
+          <!-- <a href="https://www.youtube.com/watch?v=LzMXdnABrCM">
+            <button class="btn btn-outline-success">Login</button>
+          </a> -->
+
+          <!-- <li class="nav-item">
+            <a class="nav-link" href=" {{url_for('login_logout')}} ">
+              {% if 'user_id' in session %}
+                Logout 
+              {% else %}
+                Login
+              {% endif %} 
+            </a>
+          </li> -->
+        </ul>
+
+      </div>
+    </nav>
+
+
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    {% for msg in get_flashed_messages() %}
+      <div class="alert alert-info m-2 text-center" role="alert">
+        {{ msg }}
+      </div>
+    {% endfor %}
+
+    {% block body %}{% endblock %}
+
+    {% block after_body %}{% endblock %}
+  </body>
+</html>

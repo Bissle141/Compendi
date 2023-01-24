@@ -9,21 +9,20 @@
 <br>
 
 ## To Do:
----
 
-- [ ] create virtual enviornment
-  - [ ] install dependencies
-  - [ ] pip freeze to requierments.txt
+- [x] create virtual enviornment
+  - [x] install dependencies
+  - [x] pip freeze to requierments.txt
 - [ ] create datebase
-  - [ ] create seeddata file
+  - [ ] create seed_database file
 - [ ] establish known view functions
 
 <br>
 
 ## project organization:
----
+
 ```
-📦 WritersCabinet
+📦 Compendi
  ┣ 📂data
  ┃ ┣ 📜files.json
  ┃ ┣ 📜folders.json
@@ -52,7 +51,7 @@
 <br>
 
 ## MVP
----
+
 
 - Login system
 - Create project
@@ -78,7 +77,7 @@
 - project based to do list which user can add/delete/update/markoff the items off 
 
 ## View functions
----
+
 *?? incdicates items that could be added in the future*
 
 - *homepage()*
