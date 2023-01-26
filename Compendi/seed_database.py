@@ -38,8 +38,8 @@ for project in new_projects:
 root_folders = Folders.query.filter_by(is_root=True)
 for folder in root_folders:
     child_folder = folder.add_folder(name='child_folder')
-    child_folder.add_file(name='child_file')
-    folder.add_file(name='root_child_file')
+    child_folder.add_file(name='child_file', sub_name= 'sub_name')
+    folder.add_file(name='root_child_file', sub_name= 'sub_name')
     
 print('database seeded!')
 

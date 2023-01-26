@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block head %}{% endblock %}
+{% block pageTitle %} Login {% endblock %}
+
+{% block body %}
+    <H1>Login</H1>
+    <div id="login-div" class="m-2 form-group">
+        <form action="{{url_for('login')}} " method="POST">
+            {{ login_form.csrf_token }}
+            
+            {{ login_form.username.lable }} {{ login_form.username(placeholder = "Username", class="form-control") }}
+            {{ login_form.password.lable }} {{ login_form.password(placeholder = "Password", class="form-control") }}
+            {{ login_form.submit.lable }} {{ login_form.submit(class='btn', style="background-color: #CBCD88;") }}
+        </form>
+    </div>
+
+{% endblock %}

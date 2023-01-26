@@ -3,11 +3,12 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
 
-class Users(db.Model):
+class Users(db.Model, UserMixin):
     '''Users Table'''
     
     __tablename__ = "users"
@@ -17,6 +18,7 @@ class Users(db.Model):
     username = db.Column(db.String(255), unique=True, nullable=False)
     hashed_password = db.Column(db.String(999), nullable=False)
     created = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    authenticated = db.Column(db.Boolean, default=False, nullable=False)
 
     ### RELATIONSHIPS
     projects = db.relationship('Projects', back_populates='user')
@@ -25,14 +27,32 @@ class Users(db.Model):
     def __repr__(self):
         return f"\n<\nuser_id={self.id},\n email={self.email},\n username={self.username},\n hashed_pass={self.hashed_password},\n joined={self.created}\n>\n"
     
-    def __init__(self, email, username, password):
+    def __init__(self, email, username, password, authenticated=False):
         self.email = email
         self.username = username
         self.hashed_password = generate_password_hash(password, method='pbkdf2:sha256', salt_length=8)
         self.created = datetime.now()
+        self.authenticated = authenticated
         
     def check_password(self, password):
+        '''Returns t or f depending on if password matches the stored pass'''
         return check_password_hash(self.hashed_password, password)
+    
+    def is_active(self):
+        """True, as all users are active."""
+        return True
+
+    def get_id(self):
+        """Return the email address to satisfy Flask-Login's requirements."""
+        return self.id
+
+    def is_authenticated(self):
+        """Return True if the user is authenticated."""
+        return self.authenticated
+
+    def is_anonymous(self):
+        """False, as anonymous users aren't supported."""
+        return False   
 
 class Projects(db.Model):
     '''Projects Table'''
@@ -103,8 +123,8 @@ class Folders(db.Model):
         self.project_id = project_id
         self.parent_folder_id = parent_folder_id
         
-    def add_file(self, name):
-        new_file = Files(name, self.project_id, self.folder_id)
+    def add_file(self, name, sub_name):
+        new_file = Files(name, sub_name, self.project_id, self.folder_id)
         db.session.add(new_file)
         db.session.commit()
         return new_file
@@ -132,6 +152,7 @@ class Files(db.Model):
 
     file_id = db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
     name = db.Column(db.String(255), nullable=False)
+    sub_name = db.Column(db.String(255), nullable=True)
     created = db.Column(db.DateTime, default=datetime.now)
     
     ### FOREIGN KEYS
@@ -146,20 +167,22 @@ class Files(db.Model):
     def __repr__(self):
         return f"\n<\nfile_id={self.file_id},\n name={self.name}, created={self.created},\n project_id={self.project_id},\n parent_folder_id={self.parent_folder_id}\n>\n"
     
-    def __init__(self, name, project_id, parent_folder_id=None):
+    def __init__(self, name, sub_name, project_id, parent_folder_id=None):
+        self.name = name
+        self.sub_name = sub_name
         self.name = name
         self.created = datetime.now()
         self.project_id = project_id
         self.parent_folder_id = parent_folder_id
     
     def add_image(self, public_id):
-        new_image = Images(public_id=public_id, file_id=self.file_id)
+        new_image = Images(public_id=public_id, file_id=self.file_id, project_id=self.project_id)
         db.session.add(new_image)
         db.session.commit()
         return new_image
     
     def add_section(self, header, sub_header, body):
-        new_section = Sections(header=header, sub_header=sub_header, body=body, file_id=self.file_id)
+        new_section = Sections(header=header, sub_header=sub_header, body=body, file_id=self.file_id, project_id=self.project_id)
         db.session.add(new_section)
         db.session.commit()
         return new_section
@@ -174,6 +197,7 @@ class Images(db.Model):
     created = db.Column(db.DateTime, default=datetime.now)
 
     ### FOREIGN KEYS
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.project_id'), nullable=False)
     file_id = db.Column(db.Integer, db.ForeignKey('files.file_id'), nullable=False)
     
     ### RELATIONSHIPS
@@ -182,12 +206,11 @@ class Images(db.Model):
     def __repr__(self):
         return f"\n<\nimage_id={self.image_id}, public_id={self.public_id},\n created={self.created},\n file_id={self.file_id}\n>\n"
     
-    def __init__(self, file_id, public_id):
+    def __init__(self, file_id, public_id, project_id):
         self.image_path = f'https://res.cloudinary.com/dgnwphqcb/image/upload/v1674513671/{public_id}'
         self.created = datetime.now()
         self.file_id = file_id
-
-
+        self.project_id = project_id
 
 class Sections(db.Model):
     '''Sections Table'''
@@ -202,6 +225,7 @@ class Sections(db.Model):
     last_updated = db.Column(db.DateTime, default=datetime.now)
     
     ### FOREIGN KEYS
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.project_id'), nullable=False)
     file_id = db.Column(db.Integer, db.ForeignKey('files.file_id', ondelete='CASCADE'), nullable=False)
 
     ### RELATIONSHIPS
@@ -210,13 +234,14 @@ class Sections(db.Model):
     def __repr__(self):
         return f"\n<\n section_id= {self.section_id},\n header= {self.header},\n sub_header= {self.sub_header},\n body= {self.body}\n created= {self.created},\n last_updated={self.last_updated}\n>\n"
     
-    def __init__(self, header, sub_header, body, file_id):
+    def __init__(self, header, sub_header, body, file_id, project_id):
         self.header = header
         self.sub_header = sub_header
         self.body = body
         self.created = datetime.now()
         self.last_updated = datetime.now()
         self.file_id = file_id
+        self.project_id = project_id
 
 
 def connect_to_db(app):
