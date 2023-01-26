@@ -16,12 +16,14 @@ isort==5.11.3
 itsdangerous==2.0.1
 Jinja2==3.0.1
 lazy-object-proxy==1.8.0
+lorem-text==2.1
 loremipsum==1.0.5
 MarkupSafe==2.0.1
 mccabe==0.7.0
 platformdirs==2.6.0
 psycopg2==2.9.5
 pylint==2.15.9
+random-username==1.0.2
 six==1.16.0
 SQLAlchemy==1.4.18
 tomlkit==0.11.6
