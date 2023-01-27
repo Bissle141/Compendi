@@ -20,6 +20,7 @@ usernames = generate_username(number_of_users)
 new_users = []
 for i in range(number_of_users):
     new_users.append(Users(f'{usernames[i]}@email.com', usernames[i], 'password'))
+new_users.append(Users('Bissle@email.com', 'Bissle', 'password'))
     
 db.session.add_all(new_users)
 db.session.commit()

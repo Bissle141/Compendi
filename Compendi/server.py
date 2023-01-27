@@ -52,7 +52,8 @@ app.secret_key = os.environ['SECRET_KEY']
 # Login Manager config
 login_manager = LoginManager()
 login_manager.init_app(app)
-set_login_view = 'homepage'
+set_login_view = 'login'
+LoginManager.login_message = 'Please login first.'
 
 
 #  Cloudinary Config
@@ -89,22 +90,37 @@ def login():
         user.authenticated = True
         db.session.add(user)
         db.session.commit()
-        login_user(user, remember=False)
+        login_user(user, remember=login_form.remember.data)
+        flash('Logged in successfully.', 'message')
         
         return redirect(url_for("projects", user_id=user.id))
+    flash('Input invalid, please try again.', 'error')
       
-  print(login_form.errors) 
   return render_template('login.html', login_form=login_form)
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
-  return render_template('register.html')
+  form = RegisterForm()
+  
+  if form.validate_on_submit():
+    if Users.query.filter_by(username=form.username.data).first() == None:
+      if Users.query.filter_by(email=form.email.data).first() == None:
+        new_user = Users(form.email.data, form.username.data, form.password.data)
+        db.session.add(new_user)
+        db.session.commit()
+        flash("You've been registered! Please log in.", 'message')
+        return redirect(url_for('login'))
+      else: flash('Email already in use.', 'error')
+    else: flash('Username already in use.', 'error') 
+    
+  return render_template('register.html', form=form)
 
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
   logout_user()
-  return render_template('login.html')
+  flash('Logged out successfully.', 'message')
+  return redirect(url_for('login'))
 
 
 ############ VIEW FUNCTIONS ############

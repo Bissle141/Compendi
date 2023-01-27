@@ -1,18 +1,20 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, PasswordField, RadioField, BooleanField
+from wtforms import StringField, SubmitField, TextAreaField, PasswordField, RadioField, BooleanField, EmailField
 from wtforms.fields import FormField, FieldList
-from wtforms.validators import DataRequired, Length, InputRequired, EqualTo
+from wtforms.validators import DataRequired, Length, InputRequired, EqualTo, Email
 
 
 class LoginForm(FlaskForm):
-    username = StringField("username", validators=[InputRequired(), Length(max=255)])
-    password = PasswordField("password", validators=[InputRequired()])
+    username = StringField("Username", validators=[InputRequired(), Length(max=255)])
+    password = PasswordField("Password", validators=[InputRequired()])
+    remember = BooleanField('Remember Me')
     submit = SubmitField("Login")
     
 class RegisterForm(FlaskForm):
-    username = StringField("username", validators=[InputRequired(), Length(max=255, min=4)])
-    password = PasswordField("password", validators=[InputRequired()])
-    password_confirm = PasswordField("password_confirm", validators= [EqualTo('register_password', message='Paswords must match')])
+    username = StringField("Username", validators=[InputRequired(), Length(max=255)])
+    email = EmailField("Email", validators=[InputRequired(), Email()])
+    password = PasswordField("Password", validators=[InputRequired()])
+    password_confirm = PasswordField("Confirm Password", validators= [EqualTo('password', message='Paswords must match')])
     submit = SubmitField("Register")
     
 class ProjectCreationForm(FlaskForm):

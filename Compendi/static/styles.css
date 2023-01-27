@@ -1,0 +1,43 @@
+/* FONTS */
+.bebas {
+    font-family: 'Bebas Neue', cursive;
+    color: #010101;
+    letter-spacing: 3px;
+}
+
+.old {
+    font-family: 'Old Standard TT', serif;
+    color: #010101;
+}
+
+/* MSGS */
+.message {
+    background-color: #c5c868;
+    color: white;
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 3px;
+    font-size: 1rem;
+    text-align: center;
+    width: 90vw;
+    height: fit-content;
+    padding: 10px;
+    margin: auto;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+.error {
+    background-color: #9f9b8f;
+    color: white;
+    font-family: 'Bebas Neue', cursive;
+    letter-spacing: 3px;
+    font-size: 1rem;
+    text-align: center;
+    width: 90vw;
+    height: fit-content;
+    padding: 10px;
+    margin: auto;
+    margin-top: 10px;
+    border-radius: 10px;
+
+}

@@ -19,39 +19,44 @@
     </title>
 
 
-    <nav class="navbar navbar-expand-lg sticky-top" style="background-color: #F5F2EA;">
-      <img src="../static/Compendi_logo.svg" alt="logo" width="200" >
     
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <!-- url_for('projects', user_id=session[user].user_id) -->
-            <a class="nav-link m-1" href="" style="font-family: 'Bebas Neue', cursive; font-size:2rem; color: #010101;">Projects</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href=" {{url_for('login')}} ">Login</a>
-          </li>
-
-          <li>
-            <a href=" {{url_for('register')}} ">
-              <button class="btn">Register</button>
-            </a>
-          </li>
-        </ul>
-
-      </div>
-    </nav>
-
     {% block head %}{% endblock %}
   </head>
 
-  <body>
-    {% for msg in get_flashed_messages() %}
-      <div class="alert alert-info m-2 text-center" role="alert">
-        {{ msg }}
+  <nav class="navbar navbar-expand-lg sticky-top justify-content-between" style="background-color: #F5F2EA;">
+    <a href="/" class="navbar-brand"><img src="../static/Compendi_logo.svg" alt="logo" width="200" ></a>
+  
+    <div class="collapse navbar-collapse " id="navbarSupportedContent">
+      <div class="navbar-nav mr-auto">
+        {% if current_user.authenticated == True %}
+          <div class="nav-item">
+            <a class="nav-link m-1 bebas" href="  " style="font-size:2rem;">Projects</a>
+          </div>
+        {% endif %}
       </div>
-    {% endfor %}
+      
+      <div class="d-flex flex-row flex-wrap align-content-center justify-content-end">
+        <div class="nav-item">
+          {% if current_user.authenticated == True %}
+        <a class="nav-link" href=" {{url_for('logout')}} "><button class="btn bebas" style="background-color: #CBCD88; color: white;">Logout</button></a>
+        {% else %}
+          <a class="nav-link" href=" {{url_for('login')}} "><button class="btn bebas" style="background-color: #CBCD88; color: white;">Login</button></a>
+          {% endif %}
+      </div>
+      
+      <div class="nav-item">
+        <a href=" {{url_for('register')}} " class="nav-link"><button class="btn bebas" style="background-color: #FDC886; color: white;">Register</button></a>
+      </div>
+
+    </div>
+  </nav>
+
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
 
     {% block body %}{% endblock %}
 

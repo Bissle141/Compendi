@@ -4,5 +4,40 @@
 {% block pageTitle %} Projects {% endblock %}
 
 {% block body %}
+<div id="projects-header" class="">
+    <h1>Projects</h1>
+</div>
+
+<div id="projects-body" class="d-flex flex-row justify-content-between">
+
+    <div id="projects_list" class="list-group">
+
+        <a href="" class="list-group-item list-group-item-action">
+                <div class="d-flex flex-column">
+                <div><h2>list-item-title</h2></div>
+                <div><h3>list-item-creation-date</h3></div>
+                <div><p>list-item-summary</p></div>
+            </div>
+        </a>
+
+    </div>
+
+    <div id="stats-div" class="d-flex flex-column align-content-between flex-wrap"> 
+        <div id="stats-head">
+            <h2>Stats</h2>
+            <hr>
+        </div>
+        <div id="stats-body">
+            <div class="stat">
+                <h3>stat</h3>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 25%; background-color: #CBCD88" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 
 {% endblock %}
