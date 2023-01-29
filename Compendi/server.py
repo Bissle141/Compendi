@@ -36,7 +36,8 @@ from crud import (
   get_project_by_id,
   get_section_by_id,
   get_user_by_id,
-  get_user_by_username
+  get_user_by_username,
+  get_user_projects
   )
 from forms import (
   LoginForm, 
@@ -132,7 +133,12 @@ def homepage():
 @app.route('/<user_id>/projects')
 @login_required
 def projects(user_id):
-  return render_template('projects.html')
+  return render_template('projects.html', projects=get_user_projects(current_user.id))
+
+@app.route('/<user_id>/projects/<project_name>')
+@login_required
+def project(user_id, project_name):
+  pass
 
 if __name__ == "__main__":
   connect_to_db(app)
