@@ -3,6 +3,7 @@
     font-family: 'Bebas Neue', cursive;
     color: #010101;
     letter-spacing: 3px;
+    vertical-align: middle;
 }
 .old {
     font-family: 'Old Standard TT', serif;

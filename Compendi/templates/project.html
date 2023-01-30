@@ -1,18 +1,21 @@
 {% extends 'base.html' %}
 
 {% block head %}{% endblock %}
-{% block pageTitle %} Projects {% endblock %}
+{% block pageTitle %}{% endblock %}
 
 {% block body %}
-<div id="projects-header" class="">
-    <h1 class="bebas" style="font-size: 3rem;">Projects</h1>
-</div>
 
 <div id="projects-body" class="d-flex flex-row justify-content-between">
     
     <div id="projects_list" class="list-group p-4 rounded">
         
         <div id="list-btns-div">
+            <a href="/settings">
+                <div id="settings-btn" class="btn">
+                    <img src="../static/gear.svg" alt="settings">
+                </div>
+            </a>
+
             <a href="/add-project">
                 <div id="add-project-btn" class="btn">+</div>
             </a>
@@ -22,19 +25,28 @@
 
         {% if projects == None %}
             <div class="list-group-item">
-                <div><h2 class="bebas mt-2 text-center">You don't have any projects yet.</h2></div>
-                <div><h2 class="bebas mt-2 text-center"> Click the '+' btn to get started. </h2></div>
+                <div><h2 class="bebas mt-2 text-center">This project is empty</h2></div>
+                <div><h2 class="bebas mt-2 text-center"> Click the '+' btn to start fillin it up. </h2></div>
             </div>
         {% else %}
-
-            {% for project in projects %}
-                <a href=" {{ url_for('project', project_id = project.project_id) }} " class="project-card list-group-item list-group-item-action p-3 rounded">
-                    <div class="d-flex flex-column">
-                        <div><h2 class="bebas mt-2">{{project.name}}</h2></div>
-                        <div><p class="bebas" style="font-size: 1rem; color: #FDC886">{{project.created.day}}/{{project.created.month}}/{{project.created.year}}</p></div>
-                        <div><p>{{project.desc}}</p></div>
+            <!-- Handles the folders -->
+            {% for child in children[0] %}
+                <a href="  " class="project-card list-group-item list-group-item-action p-3 rounded">
+                    <div class="d-flex flex-row">
+                        <img src="../static/folder.svg" alt="folder: {{child.name}} ">
+                        <div><h2 class="bebas ml-3">{{child.name}}</h2></div>
                     </div>
                 </a>
+            {% endfor %}
+
+            <!-- Handles the files -->
+            {% for child in children[1] %}
+                <a href="  " class="project-card list-group-item list-group-item-action p-3 rounded">
+                    <div class="d-flex flex-row align-items-center">
+                        <img src="../static/file.svg" alt="folder: {{child.name}} ">
+                        <div><h2 class="bebas ml-3">{{child.name}}</h2></div>
+                    </div>
+                </a>    
             {% endfor %}
         
         {% endif %}
@@ -57,6 +69,5 @@
     </div>
 
 </div>
-
 
 {% endblock %}

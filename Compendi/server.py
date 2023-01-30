@@ -94,7 +94,7 @@ def login():
         login_user(user, remember=login_form.remember.data)
         flash('Logged in successfully.', 'message')
         
-        return redirect(url_for("projects", user_id=user.id))
+        return redirect(url_for("projects"))
     flash('Input invalid, please try again.', 'error')
       
   return render_template('login.html', login_form=login_form)
@@ -130,15 +130,18 @@ def logout():
 def homepage():
   return render_template('homepage.html',)
 
-@app.route('/<user_id>/projects')
+@app.route('/projects')
 @login_required
-def projects(user_id):
+def projects():
   return render_template('projects.html', projects=get_user_projects(current_user.id))
 
-@app.route('/<user_id>/projects/<project_name>')
+@app.route('/projects/<project_id>')
 @login_required
-def project(user_id, project_name):
-  pass
+def project(project_id):
+  project = get_project_by_id(project_id)
+  root_folder = get_folder_by_id(project.root_folder_id)
+  children = root_folder.get_children()
+  return render_template('project.html', root_folder=root_folder, children=children )
 
 if __name__ == "__main__":
   connect_to_db(app)
