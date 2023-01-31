@@ -1,8 +1,74 @@
 {% extends 'base.html' %}
 
-{% block head %}{% endblock %}
-{% block pageTitle %}{% endblock %}
+{% block head %}
+
+{% endblock %}
+{% block pageTitle %} {{folder.name}} {% endblock %}
 
 {% block body %}
+
+<div id="projects-body" class="d-flex flex-row justify-content-between">
+    <div id="projects_list" class="list-group p-4 rounded">
+        
+
+        <div id="list-btns-div">
+            
+            <a href="/add-project">
+                <div id="add-btn" class="btn">
+                    <span class="material-icons" style="color: white;">add_circle</span>
+                </div>
+            </a>
+            
+        </div>
+
+        
+        <div>
+            {% if folder.is_root == True %}
+                <div class="d-flex flex-row align-items-center" style="height: 52px;">
+                    <a href=" {{url_for('projects')}} ">
+                        <span class="material-icons" style="font-size: 2rem; text-decoration: none; color:black; display: inline-block; vertical-align: middle; line-height: normal;">chevron_left</span>
+                    </a>
+            {% else %}
+                    <a href=" {{url_for('folder_view', folder_id=folder.parent_folder_id)}} ">
+                        <span class="material-icons" style="font-size: 2rem; text-decoration: none; color:black; display: inline-block; vertical-align: middle; line-height: normal;">chevron_left</span>
+                    </a>    
+            {% endif %}
+                    <span class="bebas" style="text-align: center; font-size: 2rem;"> {{folder.name}} </span>
+                </div>
+        </div>
+        {% if children[0] == None and children[1] == None %}
+            <div class="list-group-item">
+                <div><h2 class="bebas mt-2 text-center">You don't have any projects yet.</h2></div>
+                <div><h2 class="bebas mt-2 text-center"> Click the '+' btn to get started. </h2></div>
+            </div>
+        {% else %}
+
+            {% if children[0] != None %}
+
+                {% for child in children[0] %}
+                    <a href=" {{url_for('folder_view', folder_id=child.folder_id)}} " class="project-card list-group-item list-group-item-action p-3 rounded">
+                        <div class="d-flex flex-column">
+                            <span class="material-icons" style="color: white;">folder</span>
+                            <div><h2 class="bebas mt-2">{{child.name}}</h2></div>
+                        </div>
+                    </a>
+                {% endfor %}
+        
+            {% endif %}
+            
+            {% if children[1] != None %}
+
+                {% for child in children[1] %}
+                    <a href=" " class="project-card list-group-item list-group-item-action p-3 rounded">
+                        <div class="d-flex flex-column">
+                            <span class="material-icons" style="color: white;">article</span>
+                            <div><h2 class="bebas mt-2">{{child.name}}</h2></div>
+                        </div>
+                    </a>
+                {% endfor %}
+        
+            {% endif %}
+        {% endif %}
+    </div>
 
 {% endblock %}

@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Old+Standard+TT&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- STYLES -->
     <link rel="stylesheet" href="../static/styles.css">
@@ -24,13 +25,24 @@
   </head>
 
   <nav class="navbar navbar-expand-lg sticky-top justify-content-between" style="background-color: #F5F2EA;">
-    <a href="/" class="navbar-brand"><img src="../static/Compendi_logo.svg" alt="logo" width="200" ></a>
-  
+    
+    
     <div class="collapse navbar-collapse " id="navbarSupportedContent">
+
+      <div class="navbar-nav ">
+        <a href="/" class="navbar-brand">
+          <div id="logo" class="bebas">
+            Compendi
+          </div> 
+        </a>
+      </div> 
+
       <div class="navbar-nav mr-auto">
         {% if current_user.authenticated == True %}
           <div class="nav-item">
-            <a class="nav-link m-1 bebas" href=" {{url_for('projects', user_id=current_user.id)}} " style="font-size:2rem;">Projects</a>
+            <a id="projects-btn" class="nav-link ml-4" href=" {{url_for('projects', user_id=current_user.id)}} ">
+              <button class="rounded bebas">Projects</button>
+            </a>
           </div>
         {% endif %}
       </div>
@@ -46,10 +58,8 @@
       
       <div class="nav-item">
         {% if current_user.authenticated == True %}
-            <a  class="nav-link" href=" {{url_for('homepage')}} ">
-              <button id="profile-btn" class="btn" style="background-color: #FDC886; border-radius:50%; ;">
-                <img src="../static/person.svg" alt="profile">
-              </button>
+            <a id="profile-btn" class="nav-link" href=" {{url_for('homepage')}} ">
+              <span class="material-icons" style="color: white;">account_circle</span>
             </a>
           {% else %}
             <a href=" {{url_for('register')}} " class="nav-link"><button class="btn bebas" style="background-color: #FDC886; color: white;">Register</button></a>

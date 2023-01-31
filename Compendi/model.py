@@ -139,10 +139,15 @@ class Folders(db.Model):
         return Folders.query.filter_by(folder_id=self.parent_folder_id).first()  
     
     def get_children(self):
-        print(f'\n{self.name} children:\n-----------------\n')
-        folders = Folders.query.filter_by(parent_folder_id=self.folder_id).order_by(Folders.created)
-        files = Files.query.filter_by(parent_folder_id=self.folder_id).order_by(Files.created)
+        if Folders.query.filter_by(parent_folder_id=self.folder_id).first() == None:
+            folders = None
+        else: folders = Folders.query.filter_by(parent_folder_id=self.folder_id).order_by(Folders.created)
+        if Files.query.filter_by(parent_folder_id=self.folder_id).first() == None:
+            files = None
+        else: files = Files.query.filter_by(parent_folder_id=self.folder_id).order_by(Files.created)
         return [folders, files] 
+        
+        
         
 class Files(db.Model):
     '''Files Table'''

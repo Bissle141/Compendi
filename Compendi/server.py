@@ -135,13 +135,38 @@ def homepage():
 def projects():
   return render_template('projects.html', projects=get_user_projects(current_user.id))
 
-@app.route('/projects/<project_id>')
+@app.route('/add-project')
 @login_required
-def project(project_id):
-  project = get_project_by_id(project_id)
-  root_folder = get_folder_by_id(project.root_folder_id)
-  children = root_folder.get_children()
-  return render_template('project.html', root_folder=root_folder, children=children )
+def add_project():
+  return "add a project"
+
+@app.route('/folder-view/<folder_id>')
+@login_required
+def folder_view(folder_id):
+  open_folder = get_folder_by_id(folder_id)
+  project = get_project_by_id(open_folder.project_id)
+  children = open_folder.get_children()
+  return render_template('folder_view.html', folder=open_folder, project=project, children=children)
+
+# @app.route('/projects/<project_id>/<parent_folder_id>')
+# @login_required
+# def file_view(project_id, parent_folder_id, file_id):
+#   open_file = get_file_by_id(file_id)
+#   parent_folder = get_folder_by_id(parent_folder_id)
+#   project = get_project_by_id(project_id)
+  
+#   return render_template('file.html', file=open_file, parent_folder_name=parent_folder.name, project_name=project.name )
+
+@app.route('/projects/<project_id>/add-child')
+@login_required
+def add_child(project_id):
+  return "add a child"
+
+@app.route('/projects/<project_id>/settings')
+@login_required
+def child_settings(project_id, folder):
+  return f"{folder.folder_id}folder settings"
+
 
 if __name__ == "__main__":
   connect_to_db(app)

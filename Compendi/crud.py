@@ -43,3 +43,15 @@ def get_user_projects(user_id):
         return Projects.query.filter_by(user_id=user_id).order_by(Projects.created)
     else: return None
     
+# DELETE Functions
+def delete_project(project_id):
+    '''will return dict with lists containing all to-be-deleted objs'''
+    
+    return {
+    'project' : get_project_by_id(project_id),
+    'folders' : Folders.query.filter_by(project_id=project_id).all(),
+    'files' : Files.query.filter_by(project_id=project_id).all(),
+    'images' : Images.query.filter_by(project_id=project_id).all(),
+    'sections' : Sections.query.filter_by(project_id=project_id).all()
+    }
+    

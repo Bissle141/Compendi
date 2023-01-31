@@ -14,7 +14,9 @@
         
         <div id="list-btns-div">
             <a href="/add-project">
-                <div id="add-project-btn" class="btn">+</div>
+                <div id="add-btn" class="btn">
+                    <span class="material-icons" style="color: white;">add_circle</span>
+                </div>
             </a>
         </div>
 
@@ -28,7 +30,7 @@
         {% else %}
 
             {% for project in projects %}
-                <a href=" {{ url_for('project', project_id = project.project_id) }} " class="project-card list-group-item list-group-item-action p-3 rounded">
+                <a href=" {{ url_for('folder_view', folder_id = project.root_folder_id) }} " class="project-card list-group-item list-group-item-action p-3 rounded">
                     <div class="d-flex flex-column">
                         <div><h2 class="bebas mt-2">{{project.name}}</h2></div>
                         <div><p class="bebas" style="font-size: 1rem; color: #FDC886">{{project.created.day}}/{{project.created.month}}/{{project.created.year}}</p></div>
