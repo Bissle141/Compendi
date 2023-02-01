@@ -77,7 +77,7 @@
     font-family: 'Bebas Neue';
 }
 #add-btn:hover, #settings-btn:hover {
-    background-color: #aaad51;
+    background-color: #FDC886;
 }
 #list-btns-div {
     /* background-color: #010101; */
@@ -143,4 +143,53 @@
     font-size: 2rem; 
     font-weight:700; 
     text-align: center;
+}
+
+/* Modal */
+.mymodal {
+    background-color: white;
+    border: 10px solid #F5F2EA;
+}
+.mymodal>form>div>input, .mymodal>form>div>textarea {
+    border: 5px solid #F5F2EA;
+    border-radius: 10px;
+}
+.mymodal>form>div>ul>li>input {
+    appearance: none;
+    margin: 0;
+    font: inherit;
+    color: #F5F2EA;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 0.15em solid #F5F2EA;
+    border-radius:5px;
+}
+.mymodal>form>div>ul>li>input:checked {
+    background-color: #d7d1c0;
+}
+.mymodal>form>div>input:focus, .mymodal>form>div>textarea:focus {
+    outline: none;
+    border-radius: 10px;
+    
+}
+
+.btns-containter {
+    height: min-content;
+    width: min-content;
+    position: absolute;
+    transform: translateX(-55px) translateY(-20px);
+}
+.btn-icon {
+    font-size: 2rem; 
+    transform: translateY(-6px);
+}
+#settings-btn {
+    background-color: #c5c868;
+}
+.trash-btn {
+    padding: 0px;
+    background-color: transparent;
+}
+.interactive-icon:hover {
+    color: #edc767 !important; 
 }

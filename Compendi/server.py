@@ -130,23 +130,38 @@ def logout():
 def homepage():
   return render_template('homepage.html',)
 
-@app.route('/projects')
+@app.route('/projects', methods=['POST', 'GET'])
 @login_required
 def projects():
-  return render_template('projects.html', projects=get_user_projects(current_user.id))
+  add_project_form = ProjectCreationForm()
+  
+  if add_project_form.validate_on_submit():
+    current_user.add_project(name=add_project_form.project_name.data, desc=add_project_form.desc.data)
+  
+  return render_template('projects.html', projects=get_user_projects(current_user.id), add_project_form=add_project_form)
 
 @app.route('/add-project')
 @login_required
 def add_project():
   return "add a project"
 
-@app.route('/folder-view/<folder_id>')
+@app.route('/folder-view/<folder_id>', methods=['POST', 'GET'])
 @login_required
 def folder_view(folder_id):
+  child_creation_form = FolderFileCreationForm()
+  
   open_folder = get_folder_by_id(folder_id)
   project = get_project_by_id(open_folder.project_id)
   children = open_folder.get_children()
-  return render_template('folder_view.html', folder=open_folder, project=project, children=children)
+  
+  if child_creation_form.validate_on_submit():
+    if child_creation_form.type_selection.data == 'folder':
+      open_folder.add_folder(name=child_creation_form.name.data)
+    else:
+      open_folder.add_file(name=child_creation_form.name.data, sub_name="")
+    
+  
+  return render_template('folder_view.html', folder=open_folder, project=project, children=children, create_form=child_creation_form)
 
 # @app.route('/projects/<project_id>/<parent_folder_id>')
 # @login_required

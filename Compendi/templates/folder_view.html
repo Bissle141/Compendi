@@ -9,33 +9,94 @@
 
 <div id="projects-body" class="d-flex flex-row justify-content-between">
     <div id="projects_list" class="list-group p-4 rounded">
-        
+        <div class="btns-containter">
+            <!-- Button trigger new folder/file modal -->
+            <button id="add-btn" style="margin: 10px;" type="button" class="btn" data-toggle="modal" data-target="#child-create-modal">
+                <span class="btn-icon material-icons" style="color: white;">add_circle</span>
+            </button>
+            
+            <!-- Button trigger new settings modal -->
+            <button id="add-btn" style="margin: 10px;" type="button" class="btn" data-toggle="modal" data-target="#remove-modal">
+                <span class="btn-icon material-icons" style="color: white;">remove_circle</span>
+            </button>
 
-        <div id="list-btns-div">
-            
-            <a href="/add-project">
-                <div id="add-btn" class="btn">
-                    <span class="material-icons" style="color: white;">add_circle</span>
-                </div>
-            </a>
-            
+            <!-- Button trigger new settings modal -->
+            <button id="settings-btn" style="margin: 10px;" type="button" class="btn" data-toggle="modal" data-target="#settings-modal">
+                <span class="btn-icon material-icons" style="color: white;">settings</span>
+            </button>
         </div>
 
+        <!-- Child creation modal -->
+        <div id="child-create-modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="CreateFolderorFileModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="mymodal modal-content d-flex flex-column p-3">
+                
+                <form action=" {{url_for('folder_view', folder_id=folder.folder_id)}}" method="post">
+                    {{ create_form.csrf_token }}
+                    <div>
+                        {{create_form.type_selection(class="bebas", style="font-size: 1.5rem;")}}
+                    </div>
+                    
+                    <div>
+                        {{create_form.name.label(class="bebas", style="font-size: 1.5rem;")}}
+                        {{create_form.name(class="old p-1")}}
+                    </div>
+                    
+                    <div class="d-flex flex-row justify-content-end">
+                        {{create_form.submit(class="bebas", style="background-color:#CBCD88; border:none; color:white;")}}
+                    </div>
+                </form>
+
+              </div>
+            </div>
+        </div>
+
+        <!-- Remove Modal -->
+        <div id="remove-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ConfirmDeleteModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="mymodal modal-content d-flex flex-column p-3">
+                <div class="modal-body">
+                    <span class="bebas" style="font-size: 1.5rem;">Are you sure you want to delete this folder?</span>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-primary">Yes</button>
+                  </div>
+              </div>
+            </div>
+        </div>
         
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="SettingsModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="mymodal modal-content d-flex flex-column p-3">
+                
+                
+
+              </div>
+            </div>
+        </div>
+
+            
+
+        <!-- header -->
         <div>
             {% if folder.is_root == True %}
                 <div class="d-flex flex-row align-items-center" style="height: 52px;">
                     <a href=" {{url_for('projects')}} ">
-                        <span class="material-icons" style="font-size: 2rem; text-decoration: none; color:black; display: inline-block; vertical-align: middle; line-height: normal;">chevron_left</span>
+                        <span class="material-icons interactive-icon" style="font-size: 2rem; text-decoration: none; color:#cfc099; display: inline-block; vertical-align: middle; line-height: normal;">chevron_left</span>
                     </a>
             {% else %}
                     <a href=" {{url_for('folder_view', folder_id=folder.parent_folder_id)}} ">
-                        <span class="material-icons" style="font-size: 2rem; text-decoration: none; color:black; display: inline-block; vertical-align: middle; line-height: normal;">chevron_left</span>
+                        <span class="material-icons interactive-icon" style="font-size: 2rem; text-decoration: none; color:#cfc099; display: inline-block; vertical-align: middle; line-height: normal;">chevron_left</span>
                     </a>    
             {% endif %}
                     <span class="bebas" style="text-align: center; font-size: 2rem;"> {{folder.name}} </span>
                 </div>
-        </div>
+        
+
         {% if children[0] == None and children[1] == None %}
             <div class="list-group-item">
                 <div><h2 class="bebas mt-2 text-center">You don't have any projects yet.</h2></div>
@@ -46,12 +107,23 @@
             {% if children[0] != None %}
 
                 {% for child in children[0] %}
-                    <a href=" {{url_for('folder_view', folder_id=child.folder_id)}} " class="project-card list-group-item list-group-item-action p-3 rounded">
-                        <div class="d-flex flex-column">
-                            <span class="material-icons" style="color: white;">folder</span>
-                            <div><h2 class="bebas mt-2">{{child.name}}</h2></div>
-                        </div>
-                    </a>
+                    <div class="d-flex flex-row justify-content-between">
+
+                        <a href=" {{url_for('folder_view', folder_id=child.folder_id)}} " class="project-card list-group-item list-group-item-action p-3 rounded">
+                            <div class="d-flex flex-row">
+                                <div class="d-flex flex-row ">
+                                    <span class="material-icons mr-2" style="color: #cfc099; font-size:2rem; line-height: 50px;">folder</span>
+                                    <h2 class="bebas mt-2">{{child.name}}</h2>
+                                </div>
+                            </div>
+                        </a>
+
+                        <button class="btn trash-btn" type="button" data-toggle="modal" data-target="#remove-modal">
+                            <span class="material-icons interactive-icon m-3" style="color: #cfc099; font-size:2rem; line-height: 50px;">delete</span>
+                        </button>
+
+                    </div>
+
                 {% endfor %}
         
             {% endif %}
@@ -59,12 +131,20 @@
             {% if children[1] != None %}
 
                 {% for child in children[1] %}
-                    <a href=" " class="project-card list-group-item list-group-item-action p-3 rounded">
-                        <div class="d-flex flex-column">
-                            <span class="material-icons" style="color: white;">article</span>
-                            <div><h2 class="bebas mt-2">{{child.name}}</h2></div>
-                        </div>
-                    </a>
+                    <div class="d-flex flex-row justify-content-between">
+
+                        <a href=" " class="project-card list-group-item list-group-item-action p-3 rounded">
+                            <div class="d-flex flex-row justify-content-between">
+                                <div class="d-flex flex-row ">
+                                    <span class="material-icons mr-2" style="color: #cfc099; font-size:2rem; line-height: 50px;">article</span>
+                                    <h2 class="bebas mt-2">{{child.name}}</h2>
+                                </div>
+                            </div>
+                        </a>
+                        <button class="btn trash-btn" type="button" data-toggle="modal" data-target="#remove-modal">
+                            <span class="material-icons interactive-icon m-3" style="color: #cfc099; font-size:2rem; line-height: 50px;">delete</span>
+                        </button>
+                    </div>
                 {% endfor %}
         
             {% endif %}

@@ -11,13 +11,37 @@
 <div id="projects-body" class="d-flex flex-row justify-content-between">
     
     <div id="projects_list" class="list-group p-4 rounded">
-        
-        <div id="list-btns-div">
-            <a href="/add-project">
-                <div id="add-btn" class="btn">
-                    <span class="material-icons" style="color: white;">add_circle</span>
-                </div>
-            </a>
+        <div class="btns-containter">
+            <!-- Button trigger new project modal -->
+            <button id="add-btn" style="margin: 10px;" type="button" class="btn" data-toggle="modal" data-target="#add-project-modal">
+                <span class="btn-icon material-icons" style="color: white;">add_circle</span>
+            </button>
+        </div>
+
+         <!-- project creation modal -->
+         <div id="add-project-modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="mymodal modal-content d-flex flex-column p-3">
+                
+                <form action=" {{url_for('projects')}}" method="POST">
+                    {{ add_project_form.csrf_token }}
+                    <div>
+                        {{add_project_form.project_name.label(class="bebas", style="font-size: 1.5rem;")}}
+                        {{add_project_form.project_name(class="old p-1")}}
+                    </div>
+                    
+                    {{add_project_form.desc.label(class="bebas", style="font-size: 1.5rem;")}}
+                    <div>
+                        {{add_project_form.desc(class="old p-1", style="width:100%;")}}
+                    </div>
+                    
+                    <div class="d-flex flex-row justify-content-end">
+                        {{add_project_form.submit(class="bebas", style="background-color:#CBCD88; border:none; color:white;")}}
+                    </div>
+                </form>
+
+              </div>
+            </div>
         </div>
 
         

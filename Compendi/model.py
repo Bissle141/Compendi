@@ -53,6 +53,18 @@ class Users(db.Model, UserMixin):
     def is_anonymous(self):
         """False, as anonymous users aren't supported."""
         return False   
+    
+    def add_project(self, name, desc):
+        new_project = Projects(name=name, desc=desc, user_id=self.id)
+        db.session.add(new_project)
+        db.session.commit()
+        
+        root_folder = new_project.create_root()
+        db.session.add(root_folder)
+        db.session.commit()
+        
+        return new_project
+        
 
 class Projects(db.Model):
     '''Projects Table'''
@@ -228,6 +240,7 @@ class Sections(db.Model):
     body = db.Column(db.Text, nullable=False)
     created = db.Column(db.DateTime, default=datetime.now)
     last_updated = db.Column(db.DateTime, default=datetime.now)
+    word_count = db.Column(db.Integer, default=0)
     
     ### FOREIGN KEYS
     project_id = db.Column(db.Integer, db.ForeignKey('projects.project_id'), nullable=False)
@@ -247,6 +260,10 @@ class Sections(db.Model):
         self.last_updated = datetime.now()
         self.file_id = file_id
         self.project_id = project_id
+        self.word_count = len(self.body.split())
+    
+    def get_word_count(self):
+        return len(self.body.split())
 
 
 def connect_to_db(app):

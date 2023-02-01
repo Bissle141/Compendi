@@ -18,13 +18,13 @@ class RegisterForm(FlaskForm):
     submit = SubmitField("Register")
     
 class ProjectCreationForm(FlaskForm):
-    project_name = StringField('project_name', validators=[DataRequired(),Length(min=4, max=255)])
-    desc = TextAreaField('desc', validators=[Length(max=255)])
+    project_name = StringField('Project Name', validators=[DataRequired(),Length(min=4, max=255)])
+    desc = TextAreaField('Description', validators=[Length(max=255)])
     submit = SubmitField("Create")
 
 class FolderFileCreationForm(FlaskForm):
-    type_selection = RadioField('type_selection', choices=[('folder', 'Folder'), ('file', 'File')])
-    name = StringField("name", validators=[InputRequired(), Length(max=100, min=4)]) 
+    type_selection = RadioField('Type Selection', choices=[('folder', 'Folder'), ('file', 'File')])
+    name = StringField("name", validators=[InputRequired(), Length(max=100, min=1)]) 
     submit = SubmitField("Create")
 
 class FileSectionForm(FlaskForm):
