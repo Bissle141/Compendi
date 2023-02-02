@@ -179,6 +179,18 @@
     position: absolute;
     transform: translateX(-55px) translateY(-20px);
 }
+.btns-containter-file {
+    height: min-content;
+    width: min-content;
+    position: absolute;
+    z-index: 1;
+    transform: translateX(-32px) translateY(60px);
+}
+.btns-containter-file>a>span {
+    font-size: 1.6rem;
+    display: inline;
+    line-height: 2rem;
+}
 .btn-icon {
     font-size: 2rem; 
     transform: translateY(-6px);
@@ -192,4 +204,10 @@
 }
 .interactive-icon:hover {
     color: #edc767 !important; 
+}
+
+.section-div {
+    border-radius: .25rem;
+    padding: 10px;
+    background-color: #F5F2EA;
 }

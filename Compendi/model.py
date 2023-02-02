@@ -135,8 +135,8 @@ class Folders(db.Model):
         self.project_id = project_id
         self.parent_folder_id = parent_folder_id
         
-    def add_file(self, name, sub_name):
-        new_file = Files(name, sub_name, self.project_id, self.folder_id)
+    def add_file(self, name):
+        new_file = Files(name, self.project_id, self.folder_id)
         db.session.add(new_file)
         db.session.commit()
         return new_file
@@ -169,7 +169,6 @@ class Files(db.Model):
 
     file_id = db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
     name = db.Column(db.String(255), nullable=False)
-    sub_name = db.Column(db.String(255), nullable=True)
     created = db.Column(db.DateTime, default=datetime.now)
     
     ### FOREIGN KEYS
@@ -184,9 +183,8 @@ class Files(db.Model):
     def __repr__(self):
         return f"\n<\nfile_id={self.file_id},\n name={self.name}, created={self.created},\n project_id={self.project_id},\n parent_folder_id={self.parent_folder_id}\n>\n"
     
-    def __init__(self, name, sub_name, project_id, parent_folder_id=None):
+    def __init__(self, name, project_id, parent_folder_id=None):
         self.name = name
-        self.sub_name = sub_name
         self.name = name
         self.created = datetime.now()
         self.project_id = project_id

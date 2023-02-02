@@ -36,6 +36,4 @@ class FileImageForm(FlaskForm):
     
 class FileMainForm(FlaskForm):
     name = StringField("File Name", validators= [DataRequired(),Length(min=4, max=100)])
-    sub = StringField("File Name", validators= [DataRequired(),Length(min=4, max=100)])
-    sections = FieldList(FormField(FileSectionForm), min_entries=1)
     submit = SubmitField('Create')

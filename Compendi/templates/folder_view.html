@@ -15,7 +15,7 @@
                 <span class="btn-icon material-icons" style="color: white;">add_circle</span>
             </button>
             
-            <!-- Button trigger new settings modal -->
+            <!-- Button trigger remove modal -->
             <button id="add-btn" style="margin: 10px;" type="button" class="btn" data-toggle="modal" data-target="#remove-modal">
                 <span class="btn-icon material-icons" style="color: white;">remove_circle</span>
             </button>
@@ -30,6 +30,9 @@
         <div id="child-create-modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="CreateFolderorFileModal" aria-hidden="true">
             <div class="modal-dialog modal-lg">
               <div class="mymodal modal-content d-flex flex-column p-3">
+                <div class="d-flex flex-row justify-content-end">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
+                </div>
                 
                 <form action=" {{url_for('folder_view', folder_id=folder.folder_id)}}" method="post">
                     {{ create_form.csrf_token }}
@@ -60,8 +63,8 @@
                 </div>
                 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                     <button type="button" class="btn btn-primary">Yes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                   </div>
               </div>
             </div>
@@ -95,15 +98,17 @@
             {% endif %}
                     <span class="bebas" style="text-align: center; font-size: 2rem;"> {{folder.name}} </span>
                 </div>
-        
-
+                
+                
+        <!-- handles if there are no folders or files -->
         {% if children[0] == None and children[1] == None %}
             <div class="list-group-item">
                 <div><h2 class="bebas mt-2 text-center">You don't have any projects yet.</h2></div>
                 <div><h2 class="bebas mt-2 text-center"> Click the '+' btn to get started. </h2></div>
             </div>
-        {% else %}
 
+        {% else %}
+        <!-- handles folders -->
             {% if children[0] != None %}
 
                 {% for child in children[0] %}
@@ -127,13 +132,13 @@
                 {% endfor %}
         
             {% endif %}
-            
+            <!-- handles files -->
             {% if children[1] != None %}
 
                 {% for child in children[1] %}
                     <div class="d-flex flex-row justify-content-between">
 
-                        <a href=" " class="project-card list-group-item list-group-item-action p-3 rounded">
+                        <a href=" {{ url_for('file_view', file_id=child.file_id) }} " class="project-card list-group-item list-group-item-action p-3 rounded">
                             <div class="d-flex flex-row justify-content-between">
                                 <div class="d-flex flex-row ">
                                     <span class="material-icons mr-2" style="color: #cfc099; font-size:2rem; line-height: 50px;">article</span>

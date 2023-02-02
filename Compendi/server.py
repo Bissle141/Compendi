@@ -37,13 +37,18 @@ from crud import (
   get_section_by_id,
   get_user_by_id,
   get_user_by_username,
-  get_user_projects
+  get_user_projects,
+  get_sections,
+  get_images
   )
 from forms import (
   LoginForm, 
   RegisterForm, 
   ProjectCreationForm,
-  FolderFileCreationForm
+  FolderFileCreationForm,
+  FileMainForm,
+  FileImageForm,
+  FileSectionForm
   )
 
 # App & Secret Key config
@@ -160,8 +165,52 @@ def folder_view(folder_id):
     else:
       open_folder.add_file(name=child_creation_form.name.data, sub_name="")
     
-  
   return render_template('folder_view.html', folder=open_folder, project=project, children=children, create_form=child_creation_form)
+
+@app.route('/file-view/<file_id>', methods=['POST', 'GET'])
+@login_required
+def file_view(file_id):
+  open_file = get_file_by_id(file_id)
+  main_form = FileMainForm()
+  image_form = FileImageForm()
+  section_form = FileSectionForm()
+  
+  return render_template(
+    'file_view.html', 
+    open_file=open_file, 
+    main_form=main_form, 
+    image_form=image_form, 
+    section_form=section_form,
+    sections=get_sections(file_id),
+    images=get_images(file_id)
+    )
+  
+@app.route('/file-edit/<file_id>', methods=['POST', 'GET'])
+@login_required
+def file_edit(file_id):
+  open_file = get_file_by_id(file_id)
+  sections = get_sections(file_id)
+  images = get_images(file_id)
+  main_form = FileMainForm()
+  image_form = FileImageForm()
+  section_form = FileSectionForm()
+  
+  return render_template(
+    'file_edit.html', 
+    open_file=open_file, 
+    main_form=main_form, 
+    image_form=image_form, 
+    section_form=section_form,
+    sections=get_sections(file_id),
+    images=get_images(file_id)
+    )
+
+@app.route('/file-edit/add-section', methods=['POST', 'GET'])
+@login_required
+def add_section():
+  name = request.get_datasectionBody
+  print(name)
+  return 'Hello'
 
 # @app.route('/projects/<project_id>/<parent_folder_id>')
 # @login_required
