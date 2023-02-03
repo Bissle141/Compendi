@@ -211,3 +211,42 @@
     padding: 10px;
     background-color: #F5F2EA;
 }
+.section-header .section-header:focus .section-header:hover {
+    text-decoration: none;
+    text-decoration-line: none;
+}
+#gallery {
+    max-height: 80vh;
+    height: 80vh;
+}
+#left-gallery-div {
+    width: 35%;
+    height: calc(100%-3rem);
+}
+#image-list-div {
+    height: calc(100% - 52px);
+    
+}
+#right-gallery-div {
+    height: calc(100%-3rem);
+    width: 65%;
+}
+#btn-div {
+    position: absolute;
+    transform: translateX(-15px) translateY(100px);
+}
+/* #galleryCarousel {
+    height: auto;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+} */
+.carousel-inner>.carousel-item>img {
+    width: auto;
+    object-fit: contain;
+}
+.mybutton:focus {
+    outline: 0px solid red;
+}
+background-color: #c5c868;

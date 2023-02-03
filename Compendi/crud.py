@@ -46,13 +46,13 @@ def get_user_projects(user_id):
 # Get all sections for a given file
 def get_sections(file_id):
     if Sections.query.filter_by(file_id=file_id).first() != None:
-        return Sections.query.filter_by(file_id=file_id).all().order_by(Sections.created)
+        return Sections.query.filter_by(file_id=file_id).order_by(Sections.created)
     else: return None
     
 # get all images for file
 def get_images(file_id):
     if Images.query.filter_by(file_id=file_id).first() != None:
-        return Images.query.filter_by(file_id=file_id).all().order_by(Images.created)
+        return Images.query.filter_by(file_id=file_id).order_by(Images.created)
     else: return None
 
 
@@ -69,3 +69,38 @@ def delete_project(project_id):
     'sections' : Sections.query.filter_by(project_id=project_id).all()
     }
     
+    
+    # <div id="galleryCarouselIndicators" class="carousel slide" data-ride="carousel">
+    #                     <ol class="carousel-indicators">
+    #                         <li data-target="#galleryCarouselIndicators" data-slide-to="0" class="active"></li>
+                            
+    #                         {% for i in range(0, (images|length)) %}
+    #                         <li data-target="#galleryCarouselIndicators" data-slide-to="{{i+1}}"></li>
+    #                         {% endfor %}
+    
+    #                     </ol>
+                        
+    #                     <!-- Images -->
+    #                     <div class="carousel-inner">
+    #                         <div class="carousel-item active">
+    #                             <img class="d-block w-100" src="{{images[0].image_path}}" alt="Slide 1">
+    #                         </div>
+                            
+    #                         {% for i in range(0, (images|length)) %}
+    #                             <div class="carousel-item">
+    #                                 <img class="d-block w-100" src="{{images[i+1].image_path}}" alt="Slide {{i+2}}">
+    #                             </div>
+    #                         {% endfor %}
+    
+    #                     </div>
+    
+    #                     <!-- left and right arrows -->
+    #                     <a class="carousel-control-prev" href="#galleryCarouselIndicators" role="button" data-slide="prev">
+    #                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    #                     <span class="sr-only">Previous</span>
+    #                     </a>
+    #                     <a class="carousel-control-next" href="#galleryCarouselIndicators" role="button" data-slide="next">
+    #                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    #                     <span class="sr-only">Next</span>
+    #                     </a>
+    #                 </div>

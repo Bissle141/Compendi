@@ -70,12 +70,6 @@ cloudinary.config(
   secure = True
 )
 
-# Upload
-# upload("https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg", public_id="olympic_flag")
-
-# Transform
-# url, options = cloudinary_url("olympic_flag", width=100, height=150, crop="fill")
-
 
 ############ LOGIN MANAGEMENT ############
 
@@ -185,46 +179,42 @@ def file_view(file_id):
     images=get_images(file_id)
     )
   
-@app.route('/file-edit/<file_id>', methods=['POST', 'GET'])
+
+@app.route('/file-edit/<file_id>/add-section', methods=['POST', 'GET'])
 @login_required
-def file_edit(file_id):
-  open_file = get_file_by_id(file_id)
-  sections = get_sections(file_id)
-  images = get_images(file_id)
-  main_form = FileMainForm()
-  image_form = FileImageForm()
-  section_form = FileSectionForm()
+def add_section(file_id):
+  if request.method == "POST":
+    section_name = request.form.get('sectionName', default= 'Untitled')
+    section_body = request.form.get("sectionBody", default='...')
+
+    working_file = get_file_by_id(file_id)
+    working_file.add_section(header=section_name, body=section_body.strip())
+    
   
-  return render_template(
-    'file_edit.html', 
-    open_file=open_file, 
-    main_form=main_form, 
-    image_form=image_form, 
-    section_form=section_form,
-    sections=get_sections(file_id),
-    images=get_images(file_id)
-    )
+  return redirect(url_for("file_view", file_id=file_id))
 
-@app.route('/file-edit/add-section', methods=['POST', 'GET'])
+@app.route('/file-view/<file_id>/add-image', methods=['POST', 'GET'])
 @login_required
-def add_section():
-  name = request.get_datasectionBody
-  print(name)
-  return 'Hello'
-
-# @app.route('/projects/<project_id>/<parent_folder_id>')
-# @login_required
-# def file_view(project_id, parent_folder_id, file_id):
-#   open_file = get_file_by_id(file_id)
-#   parent_folder = get_folder_by_id(parent_folder_id)
-#   project = get_project_by_id(project_id)
+def add_image(file_id):
+  form = FileImageForm()
   
-#   return render_template('file.html', file=open_file, parent_folder_name=parent_folder.name, project_name=project.name )
+  if form.validate_on_submit():
+    working_file = get_file_by_id(file_id)
+    image_name = form.image_name.data
+    image_link = (form.image_link.data).strip()
+    
+    public_id = image_name.strip().replace(' ', '_')
+    
+    upload(form.image_link.data, public_id=public_id)
+    url, options = cloudinary_url(public_id, background='#F5F2EA', height=772, width=1100, crop="pad")
+    
+    working_file.add_image(public_id, url)
+    
+  else:
+    flash('An error occured', 'error')
+  return redirect(url_for('file_view', file_id=file_id))
+  
 
-@app.route('/projects/<project_id>/add-child')
-@login_required
-def add_child(project_id):
-  return "add a child"
 
 @app.route('/projects/<project_id>/settings')
 @login_required

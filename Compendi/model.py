@@ -190,14 +190,14 @@ class Files(db.Model):
         self.project_id = project_id
         self.parent_folder_id = parent_folder_id
     
-    def add_image(self, public_id):
-        new_image = Images(public_id=public_id, file_id=self.file_id, project_id=self.project_id)
+    def add_image(self, public_id, image_path):
+        new_image = Images(public_id=public_id, image_path=image_path, file_id=self.file_id, project_id=self.project_id)
         db.session.add(new_image)
         db.session.commit()
         return new_image
     
-    def add_section(self, header, sub_header, body):
-        new_section = Sections(header=header, sub_header=sub_header, body=body, file_id=self.file_id, project_id=self.project_id)
+    def add_section(self, header, body):
+        new_section = Sections(header=header, body=body, file_id=self.file_id, project_id=self.project_id)
         db.session.add(new_section)
         db.session.commit()
         return new_section
@@ -208,7 +208,8 @@ class Images(db.Model):
     __tablename__ = "images"
 
     image_id = db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
-    image_path = db.Column(db.Text, nullable=False)
+    public_id = db.Column(db.Text, unique=True, nullable=False)
+    image_path = db.Column(db.Text, unique=True, nullable=False)
     created = db.Column(db.DateTime, default=datetime.now)
 
     ### FOREIGN KEYS
@@ -219,10 +220,11 @@ class Images(db.Model):
     parent_file = db.relationship('Files', foreign_keys=[file_id])
 
     def __repr__(self):
-        return f"\n<\nimage_id={self.image_id}, public_id={self.public_id},\n created={self.created},\n file_id={self.file_id}\n>\n"
+        return f"\n<\nimage_id={self.image_id}, public_id={self.public_id},\n public_id={self.public_id},\n created={self.created},\n file_id={self.file_id}\n>\n"
     
-    def __init__(self, file_id, public_id, project_id):
-        self.image_path = f'https://res.cloudinary.com/dgnwphqcb/image/upload/v1674513671/{public_id}'
+    def __init__(self,public_id, file_id, image_path, project_id):
+        self.public_id = public_id
+        self.image_path = image_path
         self.created = datetime.now()
         self.file_id = file_id
         self.project_id = project_id
@@ -234,7 +236,6 @@ class Sections(db.Model):
 
     section_id = db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
     header = db.Column(db.String(255), nullable=False)
-    sub_header = db.Column(db.String(255), default='')
     body = db.Column(db.Text, nullable=False)
     created = db.Column(db.DateTime, default=datetime.now)
     last_updated = db.Column(db.DateTime, default=datetime.now)
@@ -250,9 +251,8 @@ class Sections(db.Model):
     def __repr__(self):
         return f"\n<\n section_id= {self.section_id},\n header= {self.header},\n sub_header= {self.sub_header},\n body= {self.body}\n created= {self.created},\n last_updated={self.last_updated}\n>\n"
     
-    def __init__(self, header, sub_header, body, file_id, project_id):
+    def __init__(self, header, body, file_id, project_id):
         self.header = header
-        self.sub_header = sub_header
         self.body = body
         self.created = datetime.now()
         self.last_updated = datetime.now()

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, PasswordField, RadioField, BooleanField, EmailField
 from wtforms.fields import FormField, FieldList
-from wtforms.validators import DataRequired, Length, InputRequired, EqualTo, Email
+from wtforms.validators import DataRequired, Length, InputRequired, EqualTo, Email, Regexp
 
 
 class LoginForm(FlaskForm):
@@ -30,9 +30,11 @@ class FolderFileCreationForm(FlaskForm):
 class FileSectionForm(FlaskForm):
     header = StringField("Section Header", validators= [DataRequired(),Length(min=4, max=100)])
     body = TextAreaField('Section Body', validators=[Length(max=5000)])
-
 class FileImageForm(FlaskForm):
-    pass
+    image_name = StringField('Image Name', validators=[DataRequired(), Length(min=5, max=50)])
+    image_link = StringField('Image Link', validators=[DataRequired()])
+    submit = SubmitField('Add')
+    
     
 class FileMainForm(FlaskForm):
     name = StringField("File Name", validators= [DataRequired(),Length(min=4, max=100)])
