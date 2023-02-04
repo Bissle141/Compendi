@@ -6,7 +6,7 @@ from flask import (
   flash, 
   session, 
   redirect, 
-  url_for
+  url_for,
   )
 from flask_login import (
   LoginManager, 
@@ -17,17 +17,12 @@ from flask_login import (
   set_login_view
   )
 from cloudinary.utils import cloudinary_url
-from cloudinary.uploader import upload
+from cloudinary.uploader import upload, destroy
 import cloudinary
 from model import (
   connect_to_db, 
   db, 
   Users, 
-  Projects, 
-  Folders, 
-  Files, 
-  Sections, 
-  Images
   )
 from crud import (
   get_file_by_id,
@@ -39,7 +34,14 @@ from crud import (
   get_user_by_username,
   get_user_projects,
   get_sections,
-  get_images
+  get_images,
+  check_public_id,
+  delete_project_cascade,
+  delete_image_from_table,
+  delete_section,
+  delete_file,
+  delete_folder,
+  delete_project_from_table
   )
 from forms import (
   LoginForm, 
@@ -139,11 +141,6 @@ def projects():
   
   return render_template('projects.html', projects=get_user_projects(current_user.id), add_project_form=add_project_form)
 
-@app.route('/add-project')
-@login_required
-def add_project():
-  return "add a project"
-
 @app.route('/folder-view/<folder_id>', methods=['POST', 'GET'])
 @login_required
 def folder_view(folder_id):
@@ -155,9 +152,12 @@ def folder_view(folder_id):
   
   if child_creation_form.validate_on_submit():
     if child_creation_form.type_selection.data == 'folder':
-      open_folder.add_folder(name=child_creation_form.name.data)
+      new_folder = open_folder.add_folder(name=child_creation_form.name.data)
+      return redirect(url_for('folder_view', folder_id=new_folder.folder_id))
+
     else:
-      open_folder.add_file(name=child_creation_form.name.data, sub_name="")
+      new_file = open_folder.add_file(name=child_creation_form.name.data)
+      return redirect(url_for('file_view', file_id=new_file.file_id))
     
   return render_template('folder_view.html', folder=open_folder, project=project, children=children, create_form=child_creation_form)
 
@@ -193,33 +193,121 @@ def add_section(file_id):
   
   return redirect(url_for("file_view", file_id=file_id))
 
+@app.route('/<file_id>/section-edit/<section_id>', methods=['POST', 'GET'])
+@login_required
+def edit_section(file_id, section_id):
+  new_section_header = request.form.get('newSectionHeader', default= 'Untitled')
+  new_section_body = request.form.get("sectionBody", default='...')
+  
+  working_section = get_section_by_id(section_id)
+  working_section.header = new_section_header
+  working_section.body = new_section_body
+  
+  db.session.commit()
+  return redirect(url_for('file_view', file_id=file_id))
+  
+  
+
 @app.route('/file-view/<file_id>/add-image', methods=['POST', 'GET'])
 @login_required
 def add_image(file_id):
   form = FileImageForm()
   
   if form.validate_on_submit():
-    working_file = get_file_by_id(file_id)
-    image_name = form.image_name.data
-    image_link = (form.image_link.data).strip()
-    
-    public_id = image_name.strip().replace(' ', '_')
-    
-    upload(form.image_link.data, public_id=public_id)
-    url, options = cloudinary_url(public_id, background='#F5F2EA', height=772, width=1100, crop="pad")
-    
-    working_file.add_image(public_id, url)
-    
-  else:
-    flash('An error occured', 'error')
+    try:
+      working_file = get_file_by_id(file_id)
+      image_name = form.image_name.data
+      image_link = (form.image_link.data).strip()
+      
+      public_id = image_name.strip().replace(' ', '_')
+      if check_public_id(public_id) == False:
+        upload(form.image_link.data, public_id=public_id)
+        url, options = cloudinary_url(public_id, background='#F5F2EA', width=1000, crop="pad")
+
+        working_file.add_image(public_id, url)
+        flash('Image added!', 'message')
+      else: flash('File name already in use', 'error')
+    except:
+      flash('An error occured', 'error')
   return redirect(url_for('file_view', file_id=file_id))
+
+### DELETE VIEW FUNCTIONS
+  
+@app.route('/<file_id>/delete-image/<image_id>', methods=['POST', 'GET'])
+@login_required
+def delete_image(image_id, file_id):
+  image_to_delete = get_image_by_id(image_id)
+  try:
+    destroy(image_to_delete.public_id)
+  except:
+    pass
+  delete_image_from_table(image_id=image_id)
+    
+  return redirect(url_for('file_view', file_id=file_id))
+
+@app.route('/delete/<parent_folder_id>/<folder_id>', methods=['POST', 'GET'])
+@login_required
+def delete_folder(parent_folder_id, folder_id):
+  try:
+    folder_to_delete = get_folder_by_id(folder_id)
+    db.session.delete(folder_to_delete)
+    db.session.commit()
+  except:
+    flash('Error, folder was not deleted', 'error')
+    
+  return redirect(url_for('folder_view', folder_id=parent_folder_id))
   
 
-
-@app.route('/projects/<project_id>/settings')
+@app.route('/delete/<project_id>', methods=['POST', 'GET'])
 @login_required
-def child_settings(project_id, folder):
-  return f"{folder.folder_id}folder settings"
+def delete_project(project_id):
+  project_to_delete = get_project_by_id(project_id)
+  project_to_delete.root_folder_id = None
+  db.session.commit()
+  
+  project = delete_project_cascade(project_id)
+  try:
+    for image in project['images']:
+      destroy(image.public_id)
+      db.session.delete(image)
+      db.session.commit()
+  except:
+    print('image')
+  
+  try:  
+    for section in project['sections']:
+      db.session.delete(section)
+      # delete_section(section.section_id)
+      db.session.commit()
+  except:
+    print('section')
+  
+  try:  
+    for files in project['files']:
+      db.session.delete(files)
+      # delete_file(files.file_id)
+      db.session.commit()
+  except:
+    print('file')
+  
+  try:  
+    for folder in project['folders']:
+      db.session.delete(folder)
+      # delete_folder(folder.folder_id)
+      db.session.commit()
+  except:
+    print('folder')
+      
+  
+  db.session.delete(project['root_folder'])
+  db.session.commit()
+  
+  db.session.delete(project['project'])
+  db.session.commit()
+
+  return redirect(url_for('projects'))
+
+
 
 
 if __name__ == "__main__":

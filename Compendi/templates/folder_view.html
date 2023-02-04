@@ -14,11 +14,6 @@
             <button id="add-btn" style="margin: 10px;" type="button" class="btn" data-toggle="modal" data-target="#child-create-modal">
                 <span class="btn-icon material-icons" style="color: white;">add_circle</span>
             </button>
-            
-            <!-- Button trigger remove modal -->
-            <button id="add-btn" style="margin: 10px;" type="button" class="btn" data-toggle="modal" data-target="#remove-modal">
-                <span class="btn-icon material-icons" style="color: white;">remove_circle</span>
-            </button>
 
             <!-- Button trigger new settings modal -->
             <button id="settings-btn" style="margin: 10px;" type="button" class="btn" data-toggle="modal" data-target="#settings-modal">
@@ -102,7 +97,7 @@
                 
         <!-- handles if there are no folders or files -->
         {% if children[0] == None and children[1] == None %}
-            <div class="list-group-item">
+            <div class="list-group-item projects-list-group-item projects-list-group-item">
                 <div><h2 class="bebas mt-2 text-center">You don't have any projects yet.</h2></div>
                 <div><h2 class="bebas mt-2 text-center"> Click the '+' btn to get started. </h2></div>
             </div>
@@ -112,9 +107,9 @@
             {% if children[0] != None %}
 
                 {% for child in children[0] %}
-                    <div class="d-flex flex-row justify-content-between">
+                    <div class="d-flex flex-row justify-content-between align-items-center">
 
-                        <a href=" {{url_for('folder_view', folder_id=child.folder_id)}} " class="project-card list-group-item list-group-item-action p-3 rounded">
+                        <a href=" {{url_for('folder_view', folder_id=child.folder_id)}} " class="project-card projects-list-group-item list-group-item list-group-item-action p-3 rounded">
                             <div class="d-flex flex-row">
                                 <div class="d-flex flex-row ">
                                     <span class="material-icons mr-2" style="color: #cfc099; font-size:2rem; line-height: 50px;">folder</span>
@@ -126,6 +121,22 @@
                         <button class="btn trash-btn" type="button" data-toggle="modal" data-target="#remove-modal">
                             <span class="material-icons interactive-icon m-3" style="color: #cfc099; font-size:2rem; line-height: 50px;">delete</span>
                         </button>
+                    
+                        <!-- Remove Modal -->
+                        <div id="remove-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ConfirmDeleteModal" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                            <div class="mymodal modal-content d-flex flex-column p-3">
+                                <div class="modal-body">
+                                    <span class="bebas" style="font-size: 1.5rem;">Are you sure you want to delete this folder?</span>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <a href="/delete/{{folder.folder_id}}/{{child.folder_id}}"><button type="button" class="btn btn-primary">Yes</button></a>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -138,7 +149,7 @@
                 {% for child in children[1] %}
                     <div class="d-flex flex-row justify-content-between">
 
-                        <a href=" {{ url_for('file_view', file_id=child.file_id) }} " class="project-card list-group-item list-group-item-action p-3 rounded">
+                        <a href=" {{ url_for('file_view', file_id=child.file_id) }} " class="project-card list-group-item projects-list-group-item list-group-item-action p-3 rounded">
                             <div class="d-flex flex-row justify-content-between">
                                 <div class="d-flex flex-row ">
                                     <span class="material-icons mr-2" style="color: #cfc099; font-size:2rem; line-height: 50px;">article</span>

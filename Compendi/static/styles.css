@@ -90,11 +90,11 @@
 #list-btns-div>a {
     text-decoration: none;
 }
-.list-group-item {
+.projects-list-group-item {
     margin-bottom: 10px;
     border: 5px solid transparent;
 }
-.list-group-item:hover {
+.projects-list-group-item:hover {
     border: 5px solid #c5c868;
     background: white;
 }
@@ -215,38 +215,46 @@
     text-decoration: none;
     text-decoration-line: none;
 }
-#gallery {
-    max-height: 80vh;
+#galleryCarousel {
+    width: inherit;
     height: 80vh;
+    --galleryheight: 80vh;
 }
 #left-gallery-div {
     width: 35%;
-    height: calc(100%-3rem);
+    --gallery-div-heights: calc(var(--galleryheight)-3rem);
 }
 #image-list-div {
     height: calc(100% - 52px);
     
 }
 #right-gallery-div {
-    height: calc(100%-3rem);
-    width: 65%;
+    height: var(--gallery-div-heights);
+    min-width: 65%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.d-block {
+    max-height: calc(var(--galleryheight) - 2em)  ;
+    max-width: 60vw;
+    /* aspect-ratio: auto; */
+    margin: 0;
+}
+.carousel-arrow {
+    color:#000000;
+    font-size: 2rem;
 }
 #btn-div {
     position: absolute;
     transform: translateX(-15px) translateY(100px);
 }
-/* #galleryCarousel {
-    height: auto;
-    width: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-} */
-.carousel-inner>.carousel-item>img {
-    width: auto;
-    object-fit: contain;
+.image-del-btn {
+    color: #cfc099;
+    background-color: transparent;
+    border: 0px;
 }
-.mybutton:focus {
-    outline: 0px solid red;
+.image-del-btn:focus {
+    outline: none;
 }
-background-color: #c5c868;

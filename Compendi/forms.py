@@ -31,7 +31,7 @@ class FileSectionForm(FlaskForm):
     header = StringField("Section Header", validators= [DataRequired(),Length(min=4, max=100)])
     body = TextAreaField('Section Body', validators=[Length(max=5000)])
 class FileImageForm(FlaskForm):
-    image_name = StringField('Image Name', validators=[DataRequired(), Length(min=5, max=50)])
+    image_name = StringField('Image Name', validators=[DataRequired(), Length(min=3, max=50)])
     image_link = StringField('Image Link', validators=[DataRequired()])
     submit = SubmitField('Add')
     
