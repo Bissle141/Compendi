@@ -38,10 +38,11 @@ from crud import (
   check_public_id,
   delete_project_cascade,
   delete_image_from_table,
-  delete_section,
-  delete_file,
-  delete_folder,
-  delete_project_from_table
+  delete_section_from_table,
+  delete_file_from_table,
+  delete_folder_from_table,
+  delete_project_from_table,
+  get_folder_children
   )
 from forms import (
   LoginForm, 
@@ -136,9 +137,6 @@ def homepage():
 def projects():
   add_project_form = ProjectCreationForm()
   
-  if add_project_form.validate_on_submit():
-    current_user.add_project(name=add_project_form.project_name.data, desc=add_project_form.desc.data)
-  
   return render_template('projects.html', projects=get_user_projects(current_user.id), add_project_form=add_project_form)
 
 @app.route('/folder-view/<folder_id>', methods=['POST', 'GET'])
@@ -149,15 +147,6 @@ def folder_view(folder_id):
   open_folder = get_folder_by_id(folder_id)
   project = get_project_by_id(open_folder.project_id)
   children = open_folder.get_children()
-  
-  if child_creation_form.validate_on_submit():
-    if child_creation_form.type_selection.data == 'folder':
-      new_folder = open_folder.add_folder(name=child_creation_form.name.data)
-      return redirect(url_for('folder_view', folder_id=new_folder.folder_id))
-
-    else:
-      new_file = open_folder.add_file(name=child_creation_form.name.data)
-      return redirect(url_for('file_view', file_id=new_file.file_id))
     
   return render_template('folder_view.html', folder=open_folder, project=project, children=children, create_form=child_creation_form)
 
@@ -179,6 +168,35 @@ def file_view(file_id):
     images=get_images(file_id)
     )
   
+# ADD VIEW FUNCTIONS
+@app.route('/projects/add-project', methods=['POST', 'GET'])
+@login_required
+def add_project():
+  add_project_form = ProjectCreationForm()
+  
+  if add_project_form.validate_on_submit():
+    current_user.add_project(name=add_project_form.project_name.data, desc=add_project_form.desc.data)
+  
+  return redirect(url_for('projects'))
+
+@app.route('/folder_view/<folder_id>/add_folder', methods=['POST', 'GET'])
+@login_required
+def add_folder(folder_id):
+  child_creation_form = FolderFileCreationForm()
+  
+  open_folder = get_folder_by_id(folder_id)
+  
+  if child_creation_form.validate_on_submit():
+    if child_creation_form.type_selection.data == 'folder':
+      open_folder.add_folder(name=child_creation_form.name.data)
+      return redirect(url_for('folder_view', folder_id=folder_id))
+
+    else:
+      open_folder.add_file(name=child_creation_form.name.data)
+      return redirect(url_for('folder_view', folder_id=folder_id))
+  else:
+    flash('Error, child was not created.', 'error')
+    return redirect(url_for('folder_view', folder_id=folder_id))
 
 @app.route('/file-edit/<file_id>/add-section', methods=['POST', 'GET'])
 @login_required
@@ -192,21 +210,6 @@ def add_section(file_id):
     
   
   return redirect(url_for("file_view", file_id=file_id))
-
-@app.route('/<file_id>/section-edit/<section_id>', methods=['POST', 'GET'])
-@login_required
-def edit_section(file_id, section_id):
-  new_section_header = request.form.get('newSectionHeader', default= 'Untitled')
-  new_section_body = request.form.get("sectionBody", default='...')
-  
-  working_section = get_section_by_id(section_id)
-  working_section.header = new_section_header
-  working_section.body = new_section_body
-  
-  db.session.commit()
-  return redirect(url_for('file_view', file_id=file_id))
-  
-  
 
 @app.route('/file-view/<file_id>/add-image', methods=['POST', 'GET'])
 @login_required
@@ -231,34 +234,93 @@ def add_image(file_id):
       flash('An error occured', 'error')
   return redirect(url_for('file_view', file_id=file_id))
 
+
+# UPDATE VIEW FUNCTIONS
+@app.route('/<file_id>/section-edit/<section_id>', methods=['POST', 'GET'])
+@login_required
+def edit_section(file_id, section_id):
+  new_section_header = request.form.get('newSectionHeader', default= 'Untitled')
+  new_section_body = request.form.get("sectionBody", default='...')
+  
+  working_section = get_section_by_id(section_id)
+  working_section.header = new_section_header
+  working_section.body = new_section_body
+  
+  db.session.commit()
+  return redirect(url_for('file_view', file_id=file_id))
+  
+
 ### DELETE VIEW FUNCTIONS
   
 @app.route('/<file_id>/delete-image/<image_id>', methods=['POST', 'GET'])
 @login_required
 def delete_image(image_id, file_id):
   image_to_delete = get_image_by_id(image_id)
-  try:
-    destroy(image_to_delete.public_id)
-  except:
-    pass
+
+  destroy(image_to_delete.public_id)
   delete_image_from_table(image_id=image_id)
-    
+  db.session.commit()
+
   return redirect(url_for('file_view', file_id=file_id))
 
-@app.route('/delete/<parent_folder_id>/<folder_id>', methods=['POST', 'GET'])
+@app.route('/delete-file/<parent_folder_id>/<file_id>', methods=['POST', 'GET'])
+@login_required
+def delete_file(parent_folder_id, file_id):
+  delete_file_from_table(file_id)
+  db.session.commit()
+    
+  return redirect(url_for('folder_view', folder_id=parent_folder_id))
+
+@app.route('/delete-folder/<parent_folder_id>/<folder_id>', methods=['POST', 'GET'])
 @login_required
 def delete_folder(parent_folder_id, folder_id):
-  try:
-    folder_to_delete = get_folder_by_id(folder_id)
-    db.session.delete(folder_to_delete)
+  folder_to_delete = get_folder_by_id(folder_id)
+  folder_children = []
+  file_children = []
+  direct_children = get_folder_children(folder_to_delete.folder_id)
+  
+  if direct_children[0] != None:
+    for child in direct_children[0]:
+      folder_children.append(child)
+
+  if direct_children[1] != None:
+    for child in direct_children[1]:
+      file_children.append(child)
+      
+  for folder in folder_children:
+    children = get_folder_children(folder.folder_id)
+    if children[0] != None:
+      for child in children[0]:
+        folder_children.append(child)
+    if children[1] != None:
+      for child in children[1]:
+        file_children.append(child)
+        
+  
+  for folder in folder_children[::-1]:
+    delete_folder_from_table(folder.folder_id)
     db.session.commit()
-  except:
-    flash('Error, folder was not deleted', 'error')
+      
+  for File in file_children[::-1]:
+    delete_file_from_table(File.file_id)
+    db.session.commit()
+  
+  delete_folder_from_table(folder_to_delete.folder_id)
+  db.session.commit()
     
   return redirect(url_for('folder_view', folder_id=parent_folder_id))
   
 
-@app.route('/delete/<project_id>', methods=['POST', 'GET'])
+@app.route('/<file_id>/delete-section/<section_id>', methods=['POST', 'GET'])
+@login_required
+def delete_section(section_id, file_id):
+  delete_section_from_table(section_id)
+  db.session.commit()
+  
+  return redirect(url_for('file_view', file_id=file_id))
+  
+
+@app.route('/delete-project/<project_id>', methods=['POST', 'GET'])
 @login_required
 def delete_project(project_id):
   project_to_delete = get_project_by_id(project_id)
@@ -277,7 +339,6 @@ def delete_project(project_id):
   try:  
     for section in project['sections']:
       db.session.delete(section)
-      # delete_section(section.section_id)
       db.session.commit()
   except:
     print('section')
@@ -285,7 +346,6 @@ def delete_project(project_id):
   try:  
     for files in project['files']:
       db.session.delete(files)
-      # delete_file(files.file_id)
       db.session.commit()
   except:
     print('file')
@@ -293,7 +353,6 @@ def delete_project(project_id):
   try:  
     for folder in project['folders']:
       db.session.delete(folder)
-      # delete_folder(folder.folder_id)
       db.session.commit()
   except:
     print('folder')

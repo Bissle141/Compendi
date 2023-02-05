@@ -38,6 +38,20 @@ def get_section_by_id(id):
 def get_image_by_id(id):
     return Images.query.filter_by(image_id=id).first()
 
+# Get folders children
+def get_folder_children(folder_id):
+    parent_folder = get_folder_by_id(folder_id)
+    
+    if Folders.query.filter_by(parent_folder_id=parent_folder.folder_id).first() == None:
+        folders = None
+    else: 
+        folders = Folders.query.filter_by(parent_folder_id=parent_folder.folder_id).all()
+    if Files.query.filter_by(parent_folder_id=parent_folder.folder_id).first() == None:
+        files = None
+    else: 
+        files = Files.query.filter_by(parent_folder_id=parent_folder.folder_id).all()
+    return [folders, files] 
+
 # get projects by uder id ordered by created
 def get_user_projects(user_id):
     if Projects.query.filter_by(user_id=user_id).first() != None:
@@ -71,27 +85,16 @@ def delete_image_from_table(image_id):
     except:
         return False
 
-def delete_section(id):
-    try:
-        Sections.query.filter_by(section_id=id).delete()
+def delete_section_from_table(id):
+    Sections.query.filter_by(section_id=id).delete()
 
-        return True
-    except:
-        return False
+def delete_file_from_table(id):
+    Sections.query.filter_by(file_id=id).delete()
+    Images.query.filter_by(file_id=id).delete()
+    Files.query.filter_by(file_id=id).delete()
 
-def delete_file(id):
-    try:
-        Files.query.filter_by(file_id=id).delete()
-        return True
-    except:
-        return False
-
-def delete_folder(id):
-    try:
-        Folders.query.filter_by(folder_id=id).delete()
-        return True
-    except:
-        return False
+def delete_folder_from_table(id):
+    Folders.query.filter_by(folder_id=id).delete()
 
 def delete_project_from_table(id):
     project = Projects.query.filter_by(project_id=id).first()

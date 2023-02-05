@@ -23,7 +23,7 @@
             <div class="modal-dialog modal-lg">
               <div class="mymodal modal-content d-flex flex-column p-3">
                 
-                <form action=" {{url_for('projects')}}" method="POST">
+                <form action=" {{url_for('add_project')}}" method="POST">
                     {{ add_project_form.csrf_token }}
                     <div>
                         {{add_project_form.project_name.label(class="bebas", style="font-size: 1.5rem;")}}
@@ -55,17 +55,17 @@
 
             {% for project in projects %}
                 <div class="d-flex flex-row justify-content-between"> 
-                    <a href=" {{ url_for('folder_view', folder_id = project.root_folder_id) }} " class="project-card projects-list-group-item list-group-item list-group-item-action p-3 rounded">
+                    <a href=" /folder-view/{{project.root_folder_id}} " class="project-card projects-list-group-item list-group-item list-group-item-action p-3 rounded">
                         <div class="d-flex flex-column">
                             <div><h2 class="bebas mt-2">{{project.name}}</h2></div>
                             <div><p class="bebas" style="font-size: 1rem; color: #FDC886">{{project.created.day}}/{{project.created.month}}/{{project.created.year}}</p></div>
-                            <div><p>{{project.desc}}</p></div>
+                            <div><p style="white-space: pre-line;">{{project.desc}}</p></div>
                         </div>
                     </a>
                     <div class="d-flex flex-row justify-content-end align-items-center">
-                        <a href="/delete/{{project.project_id}}">
-                            <button class="btn trash-btn ml-2" type="button" data-toggle="modal" data-target="#remove-modal">
-                                <span class="material-icons interactive-icon m-0" style="color: #cfc099; font-size:2rem; line-height: 50px;">delete</span>
+                        <a href="/delete-project/{{project.project_id}}">
+                            <button class="btn circle-btn m-2" type="button">
+                                <span class="material-icons" style="color: #cfc099;">delete</span>
                             </button>
                         </a>
                     </div>

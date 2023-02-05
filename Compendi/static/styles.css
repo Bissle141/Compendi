@@ -198,13 +198,6 @@
 #settings-btn {
     background-color: #c5c868;
 }
-.trash-btn {
-    padding: 0px;
-    background-color: transparent;
-}
-.interactive-icon:hover {
-    color: #edc767 !important; 
-}
 
 .section-div {
     border-radius: .25rem;
@@ -220,7 +213,11 @@
     height: 80vh;
     --galleryheight: 80vh;
 }
+#gallery {
+    --GalleryWidth: auto;
+}
 #left-gallery-div {
+    min-width: 250px;
     width: 35%;
     --gallery-div-heights: calc(var(--galleryheight)-3rem);
 }
@@ -230,17 +227,12 @@
 }
 #right-gallery-div {
     height: var(--gallery-div-heights);
-    min-width: 65%;
+    width: 70%;
+    min-width: 60%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-.d-block {
-    max-height: calc(var(--galleryheight) - 2em)  ;
-    max-width: 60vw;
-    /* aspect-ratio: auto; */
-    margin: 0;
 }
 .carousel-arrow {
     color:#000000;
@@ -257,4 +249,36 @@
 }
 .image-del-btn:focus {
     outline: none;
+}
+.circle-btn {
+    height: 40px;
+    aspect-ratio: 1 / 1;    
+    border-radius:50%; 
+    background-color: transparent;
+    padding: 0;
+    border: 0px;
+}
+.circle-btn>span{
+    color: white;
+    height: fit-content;
+    aspect-ratio: 1 / 1;    
+    font-size:1.5rem; 
+    padding: 0;
+    margin: .25rem;
+}
+.circle-btn:hover {
+    filter: brightness(90%);   
+}
+
+.accordion>.card {
+    background-color: #F5F2EA;
+    border: 0px;
+}
+.bg-transparent {
+    background-color: transparent;
+}
+.no-btn-outline:focus {
+    border: 0px !important;
+    outline: 0px !important;
+    box-shadow: none !important;
 }

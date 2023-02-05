@@ -35,7 +35,7 @@
 
       <div class="navbar-nav ">
         <a href="/" class="navbar-brand">
-          <div id="logo" class="bebas">
+          <div id="logo" class="bebas no-btn-outline">
             Compendi
           </div> 
         </a>
@@ -45,7 +45,7 @@
         {% if current_user.authenticated == True %}
           <div class="nav-item">
             <a id="projects-btn" class="nav-link ml-4" href=" {{url_for('projects', user_id=current_user.id)}} ">
-              <button class="rounded bebas">Projects</button>
+              <button class="rounded bebas no-btn-outline">Projects</button>
             </a>
           </div>
         {% endif %}
@@ -54,19 +54,19 @@
       <div class="d-flex flex-row flex-wrap align-content-center justify-content-end">
         <div class="nav-item">
           {% if current_user.authenticated == True %}
-            <a class="nav-link" href=" {{url_for('logout')}} "><button class="btn bebas" style="background-color: #CBCD88; color: white;">Logout</button></a>
+            <a class="nav-link no-btn-outline" href=" {{url_for('logout')}} "><button class="btn bebas" style="background-color: #CBCD88; color: white;">Logout</button></a>
           {% else %}
-            <a class="nav-link" href=" {{url_for('login')}} "><button class="btn bebas" style="background-color: #CBCD88; color: white;">Login</button></a>
+            <a class="nav-link no-btn-outline" href=" {{url_for('login')}} "><button class="btn bebas" style="background-color: #CBCD88; color: white;">Login</button></a>
           {% endif %}
       </div>
       
       <div class="nav-item">
         {% if current_user.authenticated == True %}
             <a id="profile-btn" class="nav-link" href=" {{url_for('homepage')}} ">
-              <span class="material-icons" style="color: white;">account_circle</span>
+              <span class="material-icons circle-btn" style="color: white;">account_circle</span>
             </a>
           {% else %}
-            <a href=" {{url_for('register')}} " class="nav-link"><button class="btn bebas" style="background-color: #FDC886; color: white;">Register</button></a>
+            <a href=" {{url_for('register')}} " class="nav-link no-btn-outline"><button class="btn bebas" style="background-color: #FDC886; color: white;">Register</button></a>
           {% endif %}
       </div>
 
