@@ -165,7 +165,8 @@ def file_view(file_id):
     image_form=image_form, 
     section_form=section_form,
     sections=get_sections(file_id),
-    images=get_images(file_id)
+    images=get_images(file_id),
+    cloudName=os.environ['CLOUDNAME']
     )
   
 # ADD VIEW FUNCTIONS
@@ -211,27 +212,22 @@ def add_section(file_id):
   
   return redirect(url_for("file_view", file_id=file_id))
 
-@app.route('/file-view/<file_id>/add-image', methods=['POST', 'GET'])
+@app.route('/file-view/add-image/<file_id>', methods=['POST', 'GET'])
 @login_required
 def add_image(file_id):
-  form = FileImageForm()
-  
-  if form.validate_on_submit():
-    try:
-      working_file = get_file_by_id(file_id)
-      image_name = form.image_name.data
-      image_link = (form.image_link.data).strip()
-      
-      public_id = image_name.strip().replace(' ', '_')
-      if check_public_id(public_id) == False:
-        upload(form.image_link.data, public_id=public_id)
-        url, options = cloudinary_url(public_id, background='#F5F2EA', width=1000, crop="pad")
+  try:
+    working_file = get_file_by_id(file_id)
+        
+    public_id = request.form['public_id']
+    if check_public_id(public_id) == False:
+      upload(request.form['url'], public_id=public_id)
+      url, options = cloudinary_url(public_id, background='#F5F2EA', width=1000, crop="pad")
 
-        working_file.add_image(public_id, url)
-        flash('Image added!', 'message')
-      else: flash('File name already in use', 'error')
-    except:
-      flash('An error occured', 'error')
+      working_file.add_image(public_id, url)
+      flash('Image added!', 'message')
+    else: flash('File name already in use', 'error')
+  except:
+    flash('An error occured', 'error')
   return redirect(url_for('file_view', file_id=file_id))
 
 

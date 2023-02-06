@@ -67,7 +67,7 @@
         <section id="gallery" class="d-flex flex-row flex-nowrap rounded mt-3 justify-content-between" style="background-color: #F5F2EA;">
             <div id="btn-div" >
                 <!-- Add Image Btn -->
-                <button class="btn circle-btn " data-toggle="modal" data-target="#addimage" style="background-color: #CBCD88;">
+                <button id="upload_widget"  class="btn circle-btn "  style="background-color: #CBCD88;">
                     <span class="material-icons" style="color:white;">add_photo_alternate</span>
                 </button>
             </div>
@@ -104,9 +104,6 @@
                 </div>
 
                 <div id="image-list-div" class="rounded p-3" style="background-color:white;">
-                    <!-- List of images with options to delete
-                    -name
-                    -date added -->
     
                 {% if images == None %}
                     <div class="list-group-item" style="border:0px;">
@@ -161,10 +158,15 @@
             </div>
         </section>
 
+        <form hidden id="addedImageForm" action="/file-view/add-image/{{open_file.file_id}}" method="post">
+            <input id="public_id" type="text" name="public_id" value=""/>
+            <input id="url" type="text" name="url" value=""/>
+        </form>
         
     </div>
 
-    <script>
+    <script type="text/javascript">
+
         const addSectionBtn = document.getElementById("addSection");
         const closeSectionBtn = document.getElementById("closeSectionCreation")
         const firstImage = document.querySelector('.carousel-item')
@@ -217,5 +219,30 @@
             card.innerHTML = html
         }
 
+        
+        const myWidget = cloudinary.createUploadWidget({
+            cloudName: '{{cloudName}}',
+            uploadPreset: 'Compendi_preset',
+            sources: ["url","camera","dropbox","instagram","shutterstock","getty","local","google_drive","facebook","istock","unsplash"],
+            defaultSource: "url",
+            multiple: false,
+        }, (error, result) => { 
+        if (!error && result && result.event === "success") { 
+            console.log('Done! Here is the image info: ', result.info);
+            document.getElementById('public_id').setAttribute('value', result.info.public_id)
+            document.getElementById('url').setAttribute('value', result.info.url)
+            
+            document.getElementById('addedImageForm').submit();
+        }
+  }
+)
+
+        document.getElementById("upload_widget").addEventListener(
+        "click",
+        function () {
+            myWidget.open();
+        },
+        false
+        );
     </script>
 {% endblock %}
