@@ -18,6 +18,8 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(255), unique=True, nullable=False)
     hashed_password = db.Column(db.String(999), nullable=False)
     created = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    profile_image_path = db.Column(db.String(255), nullable=True)
+    public_id = db.Column(db.String(255), nullable=True, default=None)
     authenticated = db.Column(db.Boolean, default=False, nullable=False)
 
     ### RELATIONSHIPS
@@ -27,11 +29,12 @@ class Users(db.Model, UserMixin):
     def __repr__(self):
         return f"\n<\nuser_id={self.id},\n email={self.email},\n username={self.username},\n hashed_pass={self.hashed_password},\n joined={self.created}\n>\n"
     
-    def __init__(self, email, username, password, authenticated=False):
+    def __init__(self, email, username, password, authenticated=False, profile_image_path=None):
         self.email = email
         self.username = username
         self.hashed_password = generate_password_hash(password, method='pbkdf2:sha256', salt_length=8)
         self.created = datetime.now()
+        self.profile_image_path = profile_image_path
         self.authenticated = authenticated
         
     def check_password(self, password):

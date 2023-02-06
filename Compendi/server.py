@@ -41,8 +41,9 @@ from crud import (
   delete_section_from_table,
   delete_file_from_table,
   delete_folder_from_table,
-  delete_project_from_table,
-  get_folder_children
+  get_folder_children,
+  set_profile_image,
+  delete_user_from_table
   )
 from forms import (
   LoginForm, 
@@ -86,7 +87,6 @@ def login():
   
   if login_form.validate_on_submit():
     user = get_user_by_username(login_form.username.data)
-    print(user)
     
     if user:
       if user.check_password(login_form.password.data):
@@ -252,6 +252,25 @@ def edit_section(file_id, section_id):
 
 ### DELETE VIEW FUNCTIONS
   
+@app.route('/delete-account/<id>', methods=['POST', 'GET'])
+@login_required
+def delete_user(id):
+  projects =  get_user_projects(id)
+  
+  if  projects != None:
+    for project in projects:
+      project_id = project.project_id
+      project.root_folder_id = None
+      
+      db.session.commit()
+      
+      delete_project_cascade(project_id)
+  
+  delete_user_from_table(id)
+  db.session.commit()
+  
+  return redirect(url_for('homepage'))
+  
 @app.route('/<file_id>/delete-image/<image_id>', methods=['POST', 'GET'])
 @login_required
 def delete_image(image_id, file_id):
@@ -310,6 +329,40 @@ def delete_folder(parent_folder_id, folder_id):
     
   return redirect(url_for('folder_view', folder_id=parent_folder_id))
   
+@app.route('/profile')
+@login_required
+def profile():
+  image_form = FileImageForm()
+  
+  if current_user.authenticated == True:
+    user = current_user
+    return render_template('profile.html', user=user, image_form=image_form)
+  else: 
+    return redirect(url_for('login'))
+  
+@app.route('/profile/set_profile_image/<user_id>/', methods=['POST'])
+@login_required
+def set_profile_pic(user_id):
+  image_form = FileImageForm() 
+  user = get_user_by_id(user_id)  
+    
+  if image_form.is_submitted:
+    url = image_form.image_link.data
+    if user.profile_image_path != None:
+      destroy(user.public_id)  
+         
+    response = upload(url, eager=[
+      {'radius': "max", 'width': 200, 'crop': "fill", 'gravity':"auto", 'aspect_ratio': "1:1"}
+    ])
+    
+    profile_pic_url = response['url']
+    public_id = response['public_id']
+    
+    set_profile_image(url=profile_pic_url , user_id=user_id, public_id = public_id)
+    db.session.commit()
+  else:
+    flash('Error occured, profile picture was not set.', 'error')
+  return redirect(url_for('profile'))
 
 @app.route('/<file_id>/delete-section/<section_id>', methods=['POST', 'GET'])
 @login_required
@@ -327,42 +380,7 @@ def delete_project(project_id):
   project_to_delete.root_folder_id = None
   db.session.commit()
   
-  project = delete_project_cascade(project_id)
-  try:
-    for image in project['images']:
-      destroy(image.public_id)
-      db.session.delete(image)
-      db.session.commit()
-  except:
-    print('image')
-  
-  try:  
-    for section in project['sections']:
-      db.session.delete(section)
-      db.session.commit()
-  except:
-    print('section')
-  
-  try:  
-    for files in project['files']:
-      db.session.delete(files)
-      db.session.commit()
-  except:
-    print('file')
-  
-  try:  
-    for folder in project['folders']:
-      db.session.delete(folder)
-      db.session.commit()
-  except:
-    print('folder')
-      
-  
-  db.session.delete(project['root_folder'])
-  db.session.commit()
-  
-  db.session.delete(project['project'])
-  db.session.commit()
+  delete_project_cascade(project_id)
 
   return redirect(url_for('projects'))
 

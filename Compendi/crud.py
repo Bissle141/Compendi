@@ -1,5 +1,6 @@
 from model import Users, Projects, Folders, Files, Sections, Images, db
 from sqlalchemy import delete
+from cloudinary.uploader import destroy
 
 # MODEL METHODS:
 ## Users
@@ -76,6 +77,13 @@ def check_public_id(public_id):
         return False
     else: return True
     
+def set_profile_image(url, public_id, user_id):
+    user = get_user_by_id(user_id)
+    
+    user.public_id = public_id
+    user.profile_image_path = url
+    return user
+
 # DELETE FUNCTIONS
 def delete_image_from_table(image_id):
     try:
@@ -99,7 +107,9 @@ def delete_folder_from_table(id):
 def delete_project_from_table(id):
     project = Projects.query.filter_by(project_id=id).first()
   
-
+def delete_user_from_table(id):
+    user = Users.query.filter_by(id=id).first()
+    db.session.delete(user)
 
 def delete_project_cascade(project_id):
     project = {
@@ -111,6 +121,30 @@ def delete_project_cascade(project_id):
         'sections': Sections.query.filter_by(project_id=project_id).all()
     }
     
-    return project
+    for image in project['images']:
+        destroy(image.public_id)
+        db.session.delete(image)
+        db.session.commit()
+  
+    for section in project['sections']:
+        db.session.delete(section)
+        db.session.commit()
+    
+    for files in project['files']:
+        db.session.delete(files)
+        db.session.commit()
+    
+    for folder in project['folders']:
+        db.session.delete(folder)
+        db.session.commit()
+        
+    
+    db.session.delete(project['root_folder'])
+    db.session.commit()
+    
+    db.session.delete(project['project'])
+    db.session.commit()
+        
+    
         
    

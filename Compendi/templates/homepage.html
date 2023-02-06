@@ -4,5 +4,23 @@
 {% block pageTitle %} Homepage {% endblock %}
 
 {% block body %}
-<h1>HELLO</h1>
+
+<div style="position:absolute; top:0px; width:100vw; height:100vh; background-image:url('https://images.unsplash.com/photo-1483808161634-29aa1b0e585e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80'); background-color: #F5F2EA; background-repeat: no-repeat; background-size: cover;">
+    <div class="d-flex flex-column justify-content-center align-content-center " style="height:100%; width:40%;">
+        <div class="d-flex flex-column justify-content-center p-5 rounded ml-5" style="background-color:#f5f2ea9d; height:fit-content;
+        ">
+            <h1 class="bebas mb-1" style="font-size: 6rem;">Compendi</h1>
+            <h2 class="old mb-4 " style="font-size: 2rem; ">A compendium companion for any author looking to organize their notes and take them on the go!</h2>
+            <div class="">
+                {% if current_user.authenticated == True %}
+                    <a href=" {{url_for('projects')}} " class="no-btn-outline"><button class="btn bebas" style="background-color: #FDC886; color: white;">See Your Projects</button></a>
+                {% else %}
+                    <a href=" {{url_for('register')}} " class="no-btn-outline"><button class="btn bebas" style="background-color: #FDC886; color: white;">Get Started</button></a>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+</div>
 {% endblock %}

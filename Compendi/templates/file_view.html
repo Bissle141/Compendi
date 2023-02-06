@@ -37,7 +37,7 @@
                                         </button>
                                     </a>
                                     
-                                    <button onclick="triggerSectionEdit('{{open_file.file_id}}', '{{section.section_id}}')" name="{{section.header}}" value="{{section.body}}" class="btn circle-btn ml-1" style="background-color: #CBCD88;">
+                                    <button id="editSectionBtn" onclick="triggerSectionEdit('{{open_file.file_id}}', '{{section.section_id}}')" name="{{section.header}}" value="{{section.body}}" class=" btn circle-btn ml-1" style="background-color: #CBCD88;">
                                         <span class="material-icons" style="color:white;">edit_note</span>
                                     </button>
                                 </div>
@@ -46,6 +46,11 @@
                     </div>
 
                 {% endfor %}
+
+            {% else %}
+                <div id="addASectionCard" class="card section-card d-flex align-items-center">
+                    <span class="section-header bebas " style="font-size:1.5rem; display:inline; line-height:50px;"> No Sections... </span>
+                </div>
             {% endif %}
             
             <section id="newSections">
@@ -196,14 +201,14 @@
 
         function triggerSectionEdit(file_id, id){
             if (event.target.nodeName === 'SPAN') {
-                editBtn = document.getElementById(event.target.id).closest('.editSectionBtn')
+                editBtn = event.target.closest('#editSectionBtn')
             }
             else{
                 editBtn = event.target
             }
             let header = editBtn.name
             let body = editBtn.value
-            let html = `<form action="/${file_id}/section-edit/${id}" method="post" class="m-2"><div id="sectionName" class="d-flex flex-row justify-content-between form-group"><label for="sectionName" class="bebas mb-0" style="width: 200px; font-size:1.5rem;">Section Name</label><input type="text" class="form-control old" id="newSectionHeader" name="newSectionHeader" placeholder="Section Name" value="${header}"></div><div id="sectionBody" class="d-flex flex-column justify-content-between form-group"><label for="sectionBody" class="bebas" style="width: 200px; font-size:1.5rem;">Section Body</label><textarea name="sectionBody" id="sectionBody" rows="5" class="form-control old" placeholder="...">${body}</textarea></div><div class="d-flex flex-row justify-content-end form-group mb-0"><button type="submit" class="btn bebas" style="background-color: #CBCD88; color:white;">Save</button></div></form>`
+            let html = `<form action="/${file_id}/section-edit/${id}" method="post" class="m-4"><div id="sectionName" class="d-flex flex-row justify-content-between form-group"><label for="sectionName" class="bebas mb-0" style="width: 200px; font-size:1.5rem;">Section Name</label><input type="text" class="form-control old" id="newSectionHeader" name="newSectionHeader" placeholder="Section Name" value="${header}"></div><div id="sectionBody" class="d-flex flex-column justify-content-between form-group"><label for="sectionBody" class="bebas" style="width: 200px; font-size:1.5rem;">Section Body</label><textarea name="sectionBody" id="sectionBody" rows="10" class="form-control old" placeholder="...">${body}</textarea></div><div class="d-flex flex-row justify-content-end form-group mb-0"><button type="submit" class="btn bebas" style="background-color: #CBCD88; color:white;">Save</button></div></form>`
             
             let card =document.getElementById(`${id}card`)
             while (card.firstChild) {

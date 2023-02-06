@@ -62,9 +62,16 @@
       
       <div class="nav-item">
         {% if current_user.authenticated == True %}
-            <a id="profile-btn" class="nav-link" href=" {{url_for('homepage')}} ">
+          {% if current_user.profile_image_path != None %}
+          <a id="" class="nav-link" href=" {{url_for('profile')}} ">
+            <div style="background-size: cover;background-image:url('{{current_user.profile_image_path}}'); border-radius: 50%; width: 50px; aspect-ratio: 1/1" alt="Profile Picture"></div>
+          </a>
+          {% else %}
+            <a id="profile-btn" class="nav-link" href=" {{url_for('profile')}} ">
               <span class="material-icons circle-btn" style="color: white;">account_circle</span>
             </a>
+            {% endif %}
+            
           {% else %}
             <a href=" {{url_for('register')}} " class="nav-link no-btn-outline"><button class="btn bebas" style="background-color: #FDC886; color: white;">Register</button></a>
           {% endif %}
