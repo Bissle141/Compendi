@@ -332,31 +332,27 @@ def profile():
   
   if current_user.authenticated == True:
     user = current_user
-    return render_template('profile.html', user=user, image_form=image_form)
+    return render_template('profile.html', 
+      user=user, 
+      image_form=image_form, 
+      cloudName=os.environ['CLOUDNAME'])
   else: 
-    return redirect(url_for('login'))
+    return redirect(url_for('login'), )
   
 @app.route('/profile/set_profile_image/<user_id>/', methods=['POST'])
 @login_required
 def set_profile_pic(user_id):
-  image_form = FileImageForm() 
   user = get_user_by_id(user_id)  
+  url = request.form['url']
+  public_id = request.form['public_id']
+
+  if user.profile_image_path != None:
+    destroy(user.public_id)  
     
-  if image_form.is_submitted:
-    url = image_form.image_link.data
-    if user.profile_image_path != None:
-      destroy(user.public_id)  
-         
-    response = upload(url, eager=[
-      {'radius': "max", 'width': 200, 'crop': "fill", 'gravity':"auto", 'aspect_ratio': "1:1"}
-    ])
-    
-    profile_pic_url = response['url']
-    public_id = response['public_id']
-    
-    set_profile_image(url=profile_pic_url , user_id=user_id, public_id = public_id)
+  try:
+    set_profile_image(url=url , user_id=user_id, public_id = public_id)
     db.session.commit()
-  else:
+  except:
     flash('Error occured, profile picture was not set.', 'error')
   return redirect(url_for('profile'))
 

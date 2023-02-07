@@ -32,6 +32,7 @@
         </div>
     </div>
 </div>
+
 <div id="deleteAccount" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="changePasswordModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="mymodal modal-content d-flex flex-column p-3">
@@ -55,7 +56,7 @@
 <div class="d-flex flex-column align-items-center justify-content-between" style="width: 100vw; height:100vh; position:absolute; top: 0;">
     <div class="m-3 pt-5">
         <div style="position:relative; top:50px; left:150px;">
-            <button id="editSectionBtn"  class=" btn circle-btn ml-1" style="background-color: #FDC886;" data-toggle="modal" data-target="#addProfilePicture">
+            <button id="upload_widget"  class=" btn circle-btn ml-1" style="background-color: #FDC886;">
                 <span class="material-icons" style="color:white;">add_a_photo</span>
             </button>
         </div>
@@ -79,25 +80,40 @@
         <button id="deleteAccountBtn"  class="bebas btn  mb-5" style="background-color:#FDC886; color:white;" data-toggle="modal" data-target="#deleteAccount">Delete Account</button>
 </div>
 
-<div id="addProfilePicture" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="addProfilePictureModal" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="mymodal modal-content d-flex flex-column p-3">
-            <div class="d-flex flex-row justify-content-end">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
-            </div>
-            
-            <form action="{{url_for('set_profile_pic', user_id = user.id)}}" method="post">
-                {{image_form.csrf_token}}
-                
-                {{image_form.image_link.label(class="bebas mb-0 mt-2", style="font-size:1.5rem;")}}
-                {{image_form.image_link(class="form-control old")}}
-                <div class="d-flex justify-content-end"> 
-                    {{image_form.submit(class="btn mt-3 bebas", style="background-color:#CBCD88; color:white; border:0px solid transparent;")}}
-                </div>
-                
-        </form>
-    </div>
-</div>
+
+    <form hidden id="addedImageForm" action="{{url_for('set_profile_pic', user_id = user.id)}}" method="post">
+        <input id="public_id" type="text" name="public_id" value=""/>
+        <input id="url" type="text" name="url" value=""/>
+    </form>
+
+
+<script>
+
+    const myWidget = cloudinary.createUploadWidget({
+        cloudName: '{{cloudName}}',
+        uploadPreset: 'Compendi_preset',
+        showAdvancedOptions: true,
+        sources: ["url","camera","dropbox","instagram","shutterstock","getty","local","google_drive","facebook","istock","unsplash"],
+        defaultSource: "url",
+        multiple: false,
+    }, (error, result) => { 
+    if (!error && result && result.event === "success") { 
+        console.log('Done! Here is the image info: ', result.info);
+        document.getElementById('public_id').setAttribute('value', result.info.public_id)
+        document.getElementById('url').setAttribute('value', result.info.url)
+        
+        document.getElementById('addedImageForm').submit();
+    }})
+
+    document.getElementById("upload_widget").addEventListener(
+    "click",
+    function () {
+        myWidget.open();
+    },
+    false
+    );
+
+</script>
 
 
 {% endblock %}

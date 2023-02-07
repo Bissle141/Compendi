@@ -223,6 +223,7 @@
         const myWidget = cloudinary.createUploadWidget({
             cloudName: '{{cloudName}}',
             uploadPreset: 'Compendi_preset',
+            showAdvancedOptions: true,
             sources: ["url","camera","dropbox","instagram","shutterstock","getty","local","google_drive","facebook","istock","unsplash"],
             defaultSource: "url",
             multiple: false,
@@ -233,9 +234,7 @@
             document.getElementById('url').setAttribute('value', result.info.url)
             
             document.getElementById('addedImageForm').submit();
-        }
-  }
-)
+        }})
 
         document.getElementById("upload_widget").addEventListener(
         "click",
