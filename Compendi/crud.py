@@ -84,6 +84,22 @@ def set_profile_image(url, public_id, user_id):
     user.profile_image_path = url
     return user
 
+# UPDATE
+def update_project(project_id, name, desc):
+    project = get_project_by_id(project_id)
+    project.name = name
+    project.desc = desc
+    
+def update_folder(folder_id, name):
+    folder = get_folder_by_id(folder_id)
+    folder.name = name
+    
+def update_file(file_id, name):
+    File = get_file_by_id(file_id)
+    File.name = name
+    
+
+
 # DELETE FUNCTIONS
 def delete_image_from_table(image_id):
     try:

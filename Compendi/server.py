@@ -43,6 +43,9 @@ from crud import (
   delete_folder_from_table,
   get_folder_children,
   set_profile_image,
+  update_project,
+  update_folder,
+  update_file,
   delete_user_from_table
   )
 from forms import (
@@ -147,8 +150,17 @@ def folder_view(folder_id):
   open_folder = get_folder_by_id(folder_id)
   project = get_project_by_id(open_folder.project_id)
   children = open_folder.get_children()
-    
-  return render_template('folder_view.html', folder=open_folder, project=project, children=children, create_form=child_creation_form)
+  
+  if open_folder.is_root == True:
+    form_data = {'project_name' : project.name, 'desc' : project.desc}
+    update_form = ProjectCreationForm(data=form_data)
+  else:
+    form_data = {'name' : open_folder.name}
+    update_form = FolderFileCreationForm(data=form_data)
+  
+
+  
+  return render_template('folder_view.html', folder=open_folder, project=project, children=children, create_form=child_creation_form, update_form=update_form)
 
 @app.route('/file-view/<file_id>', methods=['POST', 'GET'])
 @login_required
@@ -158,11 +170,15 @@ def file_view(file_id):
   image_form = FileImageForm()
   section_form = FileSectionForm()
   
+  edit_form_data = {'name' : open_file.name}
+  edit_form = FolderFileCreationForm(data=edit_form_data)
+  
   return render_template(
     'file_view.html', 
     open_file=open_file, 
     main_form=main_form, 
     image_form=image_form, 
+    edit_form=edit_form,
     section_form=section_form,
     sections=get_sections(file_id),
     images=get_images(file_id),
@@ -231,6 +247,7 @@ def add_image(file_id):
   return redirect(url_for('file_view', file_id=file_id))
 
 
+
 # UPDATE VIEW FUNCTIONS
 @app.route('/<file_id>/section-edit/<section_id>', methods=['POST', 'GET'])
 @login_required
@@ -245,6 +262,68 @@ def edit_section(file_id, section_id):
   db.session.commit()
   return redirect(url_for('file_view', file_id=file_id))
   
+@app.route('/project-edit/<project_id>', methods=['POST', 'GET'])
+@login_required
+def edit_project(project_id):
+  form = ProjectCreationForm()
+  project_to_edit = get_project_by_id(project_id)
+  root_folder_id = project_to_edit.root_folder_id
+  
+  print(form.validate_on_submit())
+  if form.validate_on_submit():
+    new_name = form.project_name.data
+    new_desc = form.desc.data 
+    try:
+      update_project(project_id=project_id, name=new_name, desc=new_desc)
+      db.session.commit()
+    except:
+      flash('Error, project not updated', 'error')
+      return redirect(url_for('folder_view', folder_id=root_folder_id))
+    flash('Project updated', 'message')
+    return redirect(url_for('folder_view', folder_id=root_folder_id))
+  
+  return redirect(url_for('folder_view', folder_id=root_folder_id))
+
+
+@app.route('/folder-edit/<folder_id>', methods=['POST', 'GET'])
+@login_required
+def edit_folder(folder_id):
+  form = FolderFileCreationForm()
+  
+  if form.is_submitted():
+    name = form.name.data
+    
+    try:
+      update_folder(folder_id=folder_id, name=name)
+      db.session.commit()
+    except:
+      flash('Error, folder not updated', 'error')
+      return redirect(url_for('folder_view', folder_id=folder_id))
+    
+    flash('Folder updated', 'message')
+  
+  return redirect(url_for('folder_view', folder_id=folder_id))
+
+@app.route('/file-edit/<file_id>', methods=['POST', 'GET'])
+@login_required
+def edit_file(file_id):
+  form = FolderFileCreationForm()
+  
+  if form.is_submitted():
+    name = form.name.data
+    
+    try:
+      update_file(file_id=file_id, name=name)
+      db.session.commit()
+    except:
+      flash('Error, file not updated', 'error')
+      return redirect(url_for('file_view', file_id=file_id))
+    
+    flash('Folder updated', 'message')
+  
+  return redirect(url_for('file_view', file_id=file_id))
+
+ 
 
 ### DELETE VIEW FUNCTIONS
   

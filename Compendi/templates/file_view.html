@@ -4,8 +4,32 @@
 {% block pageTitle %} {{open_file.name}} {% endblock %}
 
 {% block body %}
+<div id="edit-file-modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="mymodal modal-content d-flex flex-column p-3">
+            <form action="/file-edit/{{open_file.file_id}}" method="POST">
+            {{edit_form.csrf_token }}
+            <div>
+                {{edit_form.name.label(class="bebas", style="font-size: 1.5rem;")}}
+                {{edit_form.name(class="old p-1")}}
+            </div>
+            
+            <div class="d-flex flex-row justify-content-end">
+                {{edit_form.submit(class="bebas", style="background-color:#CBCD88; border:none; color:white;")}}
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+
 
     <div id="file-body" class="m-4 d-flex flex-column flex-nowrap">
+        <div class="file-btns-containter">
+            <!-- Button trigger new settings modal -->
+            <button id="edit-btn" style="margin: 10px; background-color:#CBCD88" type="button" class="no-btn-outline circle-btn" data-toggle="modal" data-target="#edit-file-modal">
+                <span class="material-icons" style="color: white;">settings</span>
+            </button>
+        </div>
         <div id="file-header">
             <a href=" {{url_for('folder_view', folder_id=open_file.parent_folder_id)}} ">
                 <span class="material-icons interactive-icon" style="font-size: 2rem; text-decoration: none; color:#cfc099; display: inline-block; vertical-align: middle; line-height: normal;">chevron_left</span>
@@ -73,29 +97,29 @@
             </div>
 
                 <!-- Add image modal -->
-                <div id="addimage" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="addNewImageModal" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                      <div class="mymodal modal-content d-flex flex-column p-3">
-                        <div class="d-flex flex-row justify-content-end">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
-                        </div>
-                        
-                        <form action="/file-view/{{open_file.file_id}}/add-image" method="post">
-                            {{image_form.csrf_token}}
+    <div id="addimage" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="addNewImageModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="mymodal modal-content d-flex flex-column p-3">
+            <div class="d-flex flex-row justify-content-end">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">X</button>
+            </div>
+            
+            <form action="/file-view/{{open_file.file_id}}/add-image" method="post">
+                {{image_form.csrf_token}}
 
-                            {{image_form.image_name.label(class="bebas mb-0 mt-2", style="font-size:1.5rem;")}}
-                            {{image_form.image_name(class="form-control old")}}
-                            {{image_form.image_link.label(class="bebas mb-0 mt-2", style="font-size:1.5rem;")}}
-                            {{image_form.image_link(class="form-control old")}}
-                            <div class="d-flex justify-content-end"> 
-                                {{image_form.submit(class="btn mt-3 bebas", style="background-color:#CBCD88; color:white; border:0px solid transparent;")}}
-                            </div>
-
-                        </form>
-                        
-        
-                    </div>
+                {{image_form.image_name.label(class="bebas mb-0 mt-2", style="font-size:1.5rem;")}}
+                {{image_form.image_name(class="form-control old")}}
+                {{image_form.image_link.label(class="bebas mb-0 mt-2", style="font-size:1.5rem;")}}
+                {{image_form.image_link(class="form-control old")}}
+                <div class="d-flex justify-content-end"> 
+                    {{image_form.submit(class="btn mt-3 bebas", style="background-color:#CBCD88; color:white; border:0px solid transparent;")}}
                 </div>
+
+            </form>
+            
+
+        </div>
+    </div>
 
             </div>
             <div id="left-gallery-div" class="m-3" >
