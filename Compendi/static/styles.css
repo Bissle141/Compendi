@@ -184,7 +184,7 @@
 .file-btns-containter{
     height: min-content;
     width: min-content;
-    position: fixed;
+    position: absolute;
     z-index: 1;
     transform: translateX(-29px) translateY(49px);
 }
@@ -220,7 +220,7 @@
 #galleryCarousel {
     width: inherit;
     height: 80vh;
-    --galleryheight: 80vh;
+    --galleryheight: 75vh;
 }
 #gallery {
     --GalleryWidth: auto;
@@ -228,20 +228,23 @@
 #left-gallery-div {
     min-width: 250px;
     width: 35%;
-    --gallery-div-heights: calc(var(--galleryheight)-3rem);
+    --gallery-div-heights: calc(75vh - 3rem);
 }
 #image-list-div {
     height: calc(100% - 52px);
-    
 }
 #right-gallery-div {
-    height: var(--gallery-div-heights);
+    height: calc(75vh - 3rem);
     width: 70%;
     min-width: 60%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+.carousel-img {
+    max-height: 69vh;
+    max-width: 100%;
 }
 .carousel-arrow {
     color:#000000;

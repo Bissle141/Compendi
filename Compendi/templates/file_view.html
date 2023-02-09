@@ -159,11 +159,11 @@
                     <div class="carousel-inner ">
                         {% for image in images %}
                         <div class="carousel-item">
-                            <div class="container">
-                                <img class="d-block img-fluid" src=" {{image.image_path}} " alt="{{image.public_id}}">
+                            <div class="container d-flex flex-row justify-content-center align-content-center" >
+                                <img class="carousel-img d-block fluid-img" src=" {{image.image_path}} " alt="{{image.public_id}}">
                             </div>
                             <div class="carousel-caption d-none d-md-block">
-                                <p class="bebas rounded" style="font: size 1.5rem; background-color:rgba(255, 255, 255, 0.347)">{{image.public_id}}</p>
+                                <p class="bebas rounded" style="text-align:center; font: size 2rem; background-color:rgba(255, 255, 255, 0.347)">{{image.public_id}}</p>
                             </div>
                         </div>
                         {% endfor %}
