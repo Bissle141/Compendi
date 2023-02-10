@@ -1,13 +1,92 @@
 # Compendi
 
 ## Table of Contents
-- [Compendi](#compendi)
+-- [Compendi](#compendi)
   - [Table of Contents](#table-of-contents)
-  - [Getting Started:](#getting-started)
+  - [Overview](#overview)
+    - [Features](#features)
+      - [Possible Future Features:](#possible-future-features)
+    - [Demo Video](#demo-video)
+  - [Central Tech Stack](#central-tech-stack)
+  - [Setting up:](#setting-up)
 
+<br>
 
 ---
-## Getting Started:
+## Overview
+Compendi is aimed at authors and writers looking for a place to organize and store their notes which is accessible from any device. 
+With Compendi users can create project files with unlimited nested folders and files within them and they can find and store images in a multitude of ways.
+
+### Features
+ - Project folders 
+ - Unlimited nesting of folders within projects
+ - File addition on any level of a project
+ - Image linking within files
+ - Profile management
+
+#### Possible Future Features:
+ - Project and profile statistic tracking system
+ - Ability to reorder file, folders and sections
+ - Ability to export/print project sections and whole projects
+
+### Demo Video
+[![Demo Video](./README_PNGs/V1%20Images/video.png)](https://youtu.be/PdNTFznkjA0)
+
+<br>
+
+--- 
+## Central Tech Stack
+- Python
+- Flask
+- Flask-SQLAlchemy
+- HTML
+- Jinja
+- CSS
+- Cloudinary API
+- Werkzeug
+  
+<br>
+
+---
+## Project Organization:
+
+    📦Compendi
+    ┣ 📂data
+    ┃ ┣ 📜files.json
+    ┃ ┣ 📜folders.json
+    ┃ ┗ 📜projects.json
+    ┣ 📂env...
+    ┣ 📂static
+    ┃ ┣ 📜Compendi_logo.svg
+    ┃ ┣ 📜file.svg
+    ┃ ┣ 📜folder.svg
+    ┃ ┣ 📜gear.svg
+    ┃ ┣ 📜person.svg
+    ┃ ┣ 📜plus.svg
+    ┃ ┣ 📜reset.css
+    ┃ ┗ 📜styles.css
+    ┣ 📂templates
+    ┃ ┣ 📜base.html
+    ┃ ┣ 📜file_view.html
+    ┃ ┣ 📜folder_view.html
+    ┃ ┣ 📜homepage.html
+    ┃ ┣ 📜login.html
+    ┃ ┣ 📜profile.html
+    ┃ ┣ 📜projects.html
+    ┃ ┗ 📜register.html
+    ┣ 📜.gitignore
+    ┣ 📜config.sh
+    ┣ 📜crud.py
+    ┣ 📜forms.py
+    ┣ 📜model.py
+    ┣ 📜requirements.txt
+    ┣ 📜seed_database.py
+    ┗ 📜server.py
+
+<br>
+
+---
+## Setting up:
 1. Clone the repo. If you need some help with cloning go ahead and take a look at [Githubs documentation](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository). 
 
 2.  Get your virtual enviornment set up. This step can very depending on prefrences.
@@ -71,16 +150,14 @@
         2.  once you have your account, login and navigate to your dashboard. 
 
 Should look something like this:
-![dashboard](/Planning/README_PNGs/Coudinary_dashboard.png)
+![dashboard](./README_PNGs/Coudinary_dashboard.png)
 
 *This is where you will find all the info you need to fill in the rest of your config.sh file.*
 
-4. Once you have your config.sh file set up go ahead and run it in the terminal to get your enviornment variables exported.
+1. Once you have your config.sh file set up go ahead and run it in the terminal to get your enviornment variables exported.
    
     `source config.sh`
     
-5. Now that all of that is set up go ahead and run *server.py*, `python server.py`, and navigate to the locally hosted [Compendi site](http://localhost:5000)!
+2. Now that all of that is set up go ahead and run *server.py*, `python server.py`, and navigate to the locally hosted [Compendi site](http://localhost:5000)!
     * You can run `python seedatabase.py` to seed the database if you would like, but it's not needed. Feel free to register an account and take a look around!
    
-    
-
